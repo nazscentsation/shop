@@ -1,0 +1,26 @@
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Go build artifacts
+backend/bin/
+*.exe
+*.test
+*.out
+
+# Go module cache
+vendor/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log

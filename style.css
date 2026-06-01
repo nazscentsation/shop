@@ -1,0 +1,308 @@
+/* =============================================
+   NazScentsation — Coming Soon Page Styles
+   Theme: Black · Gold · Ivory
+   ============================================= */
+
+:root {
+  --black:      #0a0a0a;
+  --black-soft: #111111;
+  --black-card: #141414;
+  --gold:       #C9A84C;
+  --gold-light: #e0c170;
+  --gold-dim:   #8a6f2e;
+  --ivory:      #F5F0E8;
+  --ivory-dim:  #c8c0b0;
+  --white:      #ffffff;
+
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-sans:  'Montserrat', Arial, sans-serif;
+}
+
+/* ---- Reset & Base ---- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--black);
+  color: var(--ivory);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ---- Particles Background ---- */
+.particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0;
+  animation: floatUp var(--dur) ease-in infinite;
+  animation-delay: var(--delay);
+  width: var(--size);
+  height: var(--size);
+}
+
+@keyframes floatUp {
+  0%   { opacity: 0;    transform: translateY(0)      scale(0.5); }
+  20%  { opacity: 0.35; }
+  80%  { opacity: 0.15; }
+  100% { opacity: 0;    transform: translateY(-100vh) scale(1.2); }
+}
+
+/* ---- Main Container ---- */
+.container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 680px;
+  padding: 3rem 2rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+  text-align: center;
+}
+
+/* ---- Logo ---- */
+.logo-wrap {
+  margin-bottom: 2.8rem;
+  animation: fadeDown 1s ease both;
+}
+
+.logo-svg {
+  width: 180px;
+  height: 180px;
+  filter: drop-shadow(0 0 18px rgba(201, 168, 76, 0.25));
+  transition: filter 0.4s;
+}
+
+.logo-svg:hover {
+  filter: drop-shadow(0 0 28px rgba(201, 168, 76, 0.5));
+}
+
+/* ---- Hero ---- */
+.hero {
+  margin-bottom: 2.2rem;
+  animation: fadeUp 1s 0.3s ease both;
+}
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-weight: 200;
+  font-size: 0.72rem;
+  letter-spacing: 0.32em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.2rem;
+}
+
+.headline {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(3.2rem, 9vw, 5.5rem);
+  line-height: 1.05;
+  color: var(--ivory);
+  margin-bottom: 1.4rem;
+}
+
+.headline em {
+  font-style: italic;
+  color: var(--gold-light);
+}
+
+.dot {
+  color: var(--gold);
+  animation: blink 1.6s infinite;
+}
+.dot:nth-child(2) { animation-delay: 0.3s; }
+.dot:nth-child(3) { animation-delay: 0.6s; }
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.2; }
+}
+
+.subtext {
+  font-family: var(--font-sans);
+  font-weight: 300;
+  font-size: 0.88rem;
+  line-height: 1.85;
+  color: var(--ivory-dim);
+  letter-spacing: 0.06em;
+}
+
+/* ---- Ornament Divider ---- */
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.8rem 0;
+  width: 100%;
+  max-width: 360px;
+  animation: fadeUp 1s 0.5s ease both;
+}
+
+.ornament .line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, transparent, var(--gold-dim));
+}
+
+.ornament .line:last-child {
+  background: linear-gradient(to left, transparent, var(--gold-dim));
+}
+
+.ornament svg {
+  flex-shrink: 0;
+  opacity: 0.8;
+}
+
+/* ---- Notify Form ---- */
+.notify {
+  width: 100%;
+  max-width: 480px;
+  animation: fadeUp 1s 0.7s ease both;
+  margin-bottom: 2.4rem;
+}
+
+.notify-label {
+  font-size: 0.75rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ivory-dim);
+  margin-bottom: 1.2rem;
+  font-weight: 300;
+}
+
+.notify-form {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--gold-dim);
+  border-radius: 2px;
+  overflow: hidden;
+  background: var(--black-card);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.notify-form:focus-within {
+  border-color: var(--gold);
+  box-shadow: 0 0 20px rgba(201, 168, 76, 0.15);
+}
+
+.notify-form input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--ivory);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  padding: 0.9rem 1.2rem;
+}
+
+.notify-form input::placeholder {
+  color: var(--ivory-dim);
+  opacity: 0.5;
+}
+
+.notify-form button {
+  background: var(--gold);
+  color: var(--black);
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.72rem;
+  font-weight: 400;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  padding: 0.9rem 1.6rem;
+  transition: background 0.3s, color 0.3s;
+  white-space: nowrap;
+}
+
+.notify-form button:hover {
+  background: var(--gold-light);
+}
+
+.notify-thanks {
+  margin-top: 0.9rem;
+  font-size: 0.78rem;
+  color: var(--gold);
+  letter-spacing: 0.12em;
+  min-height: 1.2em;
+  font-weight: 300;
+}
+
+/* ---- Social Links ---- */
+.social {
+  display: flex;
+  gap: 1.6rem;
+  margin-bottom: 2rem;
+  animation: fadeUp 1s 0.9s ease both;
+}
+
+.social-link {
+  color: var(--gold-dim);
+  transition: color 0.3s, transform 0.3s;
+  display: flex;
+  align-items: center;
+}
+
+.social-link svg {
+  width: 20px;
+  height: 20px;
+}
+
+.social-link:hover {
+  color: var(--gold-light);
+  transform: translateY(-3px);
+}
+
+/* ---- Copyright ---- */
+.copyright {
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  font-weight: 300;
+  opacity: 0.6;
+  animation: fadeUp 1s 1.1s ease both;
+}
+
+/* ---- Animations ---- */
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 480px) {
+  .container { padding: 2.5rem 1.4rem 2rem; }
+  .logo-svg  { width: 150px; height: 150px; }
+  .notify-form { flex-direction: column; }
+  .notify-form button { padding: 0.85rem; letter-spacing: 0.2em; }
+}

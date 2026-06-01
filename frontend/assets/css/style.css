@@ -1,0 +1,316 @@
+/* ==============================================
+   NazScentsation — Main Stylesheet
+   Theme: Black · Gold · Ivory
+   ============================================== */
+
+:root {
+  --black:       #0a0a0a;
+  --black-soft:  #111111;
+  --black-card:  #141414;
+  --gold:        #C9A84C;
+  --gold-light:  #e0c170;
+  --gold-dim:    #8a6f2e;
+  --ivory:       #F5F0E8;
+  --ivory-dim:   #c8c0b0;
+
+  --font-serif:  'Cormorant Garamond', Georgia, serif;
+  --font-sans:   'Montserrat', Arial, sans-serif;
+
+  --transition:  0.3s ease;
+  --radius:      2px;
+}
+
+/* ---- Reset ---- */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html  { font-size: 16px; scroll-behavior: smooth; }
+body  {
+  background-color: var(--black);
+  color: var(--ivory);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ---- Ambient glow orbs ---- */
+.glow {
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(90px);
+  opacity: 0.07;
+}
+.glow--top {
+  width: 500px; height: 500px;
+  background: var(--gold);
+  top: -150px; left: 50%;
+  transform: translateX(-50%);
+}
+.glow--bottom {
+  width: 400px; height: 400px;
+  background: var(--gold);
+  bottom: -120px; right: 10%;
+}
+
+/* ---- Particles ---- */
+.particles {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  overflow: hidden;
+}
+.particle {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--gold);
+  opacity: 0;
+  animation: floatUp var(--dur, 14s) ease-in infinite;
+  animation-delay: var(--delay, 0s);
+  width: var(--size, 2px);
+  height: var(--size, 2px);
+}
+@keyframes floatUp {
+  0%   { opacity: 0;    transform: translateY(0) scale(0.5); }
+  20%  { opacity: 0.35; }
+  80%  { opacity: 0.12; }
+  100% { opacity: 0;    transform: translateY(-100vh) scale(1.3); }
+}
+
+/* ---- Main container ---- */
+.container {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 700px;
+  padding: 3.5rem 2rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+/* ---- Logo ---- */
+.logo-wrap { margin-bottom: 2.8rem; animation: fadeDown 1s ease both; }
+.logo-svg {
+  width: 190px; height: 190px;
+  filter: drop-shadow(0 0 20px rgba(201,168,76,0.22));
+  transition: filter var(--transition);
+}
+.logo-svg:hover { filter: drop-shadow(0 0 32px rgba(201,168,76,0.5)); }
+
+/* ---- Hero ---- */
+.hero { margin-bottom: 2rem; animation: fadeUp 1s 0.3s ease both; }
+
+.eyebrow {
+  font-family: var(--font-sans);
+  font-weight: 200;
+  font-size: 0.7rem;
+  letter-spacing: 0.34em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 1.2rem;
+}
+
+.headline {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(3.4rem, 9vw, 5.8rem);
+  line-height: 1.05;
+  color: var(--ivory);
+  margin-bottom: 1.4rem;
+}
+.headline em { font-style: italic; color: var(--gold-light); }
+
+.dot { color: var(--gold); animation: blink 1.6s infinite; }
+.dot:nth-child(2) { animation-delay: 0.3s; }
+.dot:nth-child(3) { animation-delay: 0.6s; }
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.15; }
+}
+
+.subtext {
+  font-weight: 300;
+  font-size: 0.88rem;
+  line-height: 1.9;
+  color: var(--ivory-dim);
+  letter-spacing: 0.06em;
+}
+
+/* ---- Ornament divider ---- */
+.ornament {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1.6rem 0;
+  width: 100%;
+  max-width: 380px;
+  animation: fadeUp 1s 0.5s ease both;
+}
+.ornament .line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--gold-dim)); }
+.ornament .line:last-child { background: linear-gradient(to left, transparent, var(--gold-dim)); }
+
+/* ---- Countdown ---- */
+.countdown {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.6rem;
+  margin-bottom: 2.4rem;
+  animation: fadeUp 1s 0.55s ease both;
+}
+.countdown__unit {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  min-width: 68px;
+}
+.countdown__num {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  font-weight: 300;
+  color: var(--gold-light);
+  line-height: 1;
+  letter-spacing: 0.04em;
+  padding: 0.5rem 0.8rem;
+  border: 1px solid rgba(201,168,76,0.25);
+  background: rgba(201,168,76,0.04);
+  min-width: 68px;
+  text-align: center;
+}
+.countdown__label {
+  font-size: 0.58rem;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ivory-dim);
+  font-weight: 300;
+}
+.countdown__sep {
+  font-family: var(--font-serif);
+  font-size: 2.4rem;
+  color: var(--gold-dim);
+  line-height: 1;
+  padding-top: 0.45rem;
+  opacity: 0.6;
+}
+
+/* ---- Notify form ---- */
+.notify {
+  width: 100%;
+  max-width: 480px;
+  margin-bottom: 2.4rem;
+  animation: fadeUp 1s 0.7s ease both;
+}
+.notify-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--ivory-dim);
+  margin-bottom: 1.1rem;
+  font-weight: 300;
+}
+.notify-form {
+  display: flex;
+  border: 1px solid var(--gold-dim);
+  border-radius: var(--radius);
+  overflow: hidden;
+  background: var(--black-card);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.notify-form:focus-within {
+  border-color: var(--gold);
+  box-shadow: 0 0 22px rgba(201,168,76,0.15);
+}
+.notify-form input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--ivory);
+  font-family: var(--font-sans);
+  font-size: 0.85rem;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  padding: 0.9rem 1.2rem;
+}
+.notify-form input::placeholder { color: var(--ivory-dim); opacity: 0.45; }
+.notify-form button {
+  background: var(--gold);
+  color: var(--black);
+  border: none;
+  outline: none;
+  cursor: pointer;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.26em;
+  text-transform: uppercase;
+  padding: 0.9rem 1.6rem;
+  transition: background var(--transition);
+  white-space: nowrap;
+}
+.notify-form button:hover  { background: var(--gold-light); }
+.notify-form button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.notify-feedback {
+  margin-top: 0.85rem;
+  font-size: 0.76rem;
+  letter-spacing: 0.12em;
+  min-height: 1.1em;
+  font-weight: 300;
+}
+.notify-feedback.success { color: var(--gold); }
+.notify-feedback.error   { color: #e07070; }
+
+/* ---- Social links ---- */
+.social {
+  display: flex;
+  gap: 1.6rem;
+  margin-bottom: 2rem;
+  animation: fadeUp 1s 0.9s ease both;
+}
+.social-link {
+  color: var(--gold-dim);
+  transition: color var(--transition), transform var(--transition);
+  display: flex;
+  align-items: center;
+}
+.social-link svg { width: 20px; height: 20px; }
+.social-link:hover { color: var(--gold-light); transform: translateY(-3px); }
+
+/* ---- Copyright ---- */
+.copyright {
+  font-size: 0.66rem;
+  letter-spacing: 0.18em;
+  color: var(--gold-dim);
+  text-transform: uppercase;
+  font-weight: 300;
+  opacity: 0.55;
+  animation: fadeUp 1s 1.1s ease both;
+}
+
+/* ---- Keyframes ---- */
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 520px) {
+  .container { padding: 2.5rem 1.2rem 2rem; }
+  .logo-svg  { width: 155px; height: 155px; }
+  .countdown { gap: 0.3rem; }
+  .countdown__unit { min-width: 56px; }
+  .countdown__num  { min-width: 56px; font-size: 1.8rem; padding: 0.4rem 0.5rem; }
+  .notify-form { flex-direction: column; }
+  .notify-form button { padding: 0.85rem; }
+}
