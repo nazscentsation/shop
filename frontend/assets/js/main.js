@@ -19,44 +19,6 @@
   }
 })();
 
-// ---- Countdown timer ----
-(function initCountdown() {
-  // Set your launch date here (YYYY, MM-1, DD, HH, MM, SS)
-  const launch = new Date(2026, 8, 1, 0, 0, 0); // 1 Sep 2026
-
-  const pad = n => String(n).padStart(2, '0');
-
-  const daysEl  = document.getElementById('cd-days');
-  const hoursEl = document.getElementById('cd-hours');
-  const minsEl  = document.getElementById('cd-mins');
-  const secsEl  = document.getElementById('cd-secs');
-
-  if (!daysEl) return;
-
-  function tick() {
-    const now  = Date.now();
-    const diff = launch.getTime() - now;
-
-    if (diff <= 0) {
-      daysEl.textContent = hoursEl.textContent = minsEl.textContent = secsEl.textContent = '00';
-      return;
-    }
-
-    const days  = Math.floor(diff / 86400000);
-    const hours = Math.floor((diff % 86400000) / 3600000);
-    const mins  = Math.floor((diff % 3600000)  / 60000);
-    const secs  = Math.floor((diff % 60000)    / 1000);
-
-    daysEl.textContent  = pad(days);
-    hoursEl.textContent = pad(hours);
-    minsEl.textContent  = pad(mins);
-    secsEl.textContent  = pad(secs);
-  }
-
-  tick();
-  setInterval(tick, 1000);
-})();
-
 // ---- Notify form ----
 (function initNotifyForm() {
   const form     = document.getElementById('notifyForm');
