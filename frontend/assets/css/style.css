@@ -155,49 +155,6 @@ body  {
 .ornament .line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--gold-dim)); }
 .ornament .line:last-child { background: linear-gradient(to left, transparent, var(--gold-dim)); }
 
-/* ---- Countdown ---- */
-.countdown {
-  display: flex;
-  align-items: flex-start;
-  gap: 0.6rem;
-  margin-bottom: 2.4rem;
-  animation: fadeUp 1s 0.55s ease both;
-}
-.countdown__unit {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.4rem;
-  min-width: 68px;
-}
-.countdown__num {
-  font-family: var(--font-serif);
-  font-size: clamp(2rem, 6vw, 3.2rem);
-  font-weight: 300;
-  color: var(--gold-light);
-  line-height: 1;
-  letter-spacing: 0.04em;
-  padding: 0.5rem 0.8rem;
-  border: 1px solid rgba(201,168,76,0.25);
-  background: rgba(201,168,76,0.04);
-  min-width: 68px;
-  text-align: center;
-}
-.countdown__label {
-  font-size: 0.58rem;
-  letter-spacing: 0.3em;
-  text-transform: uppercase;
-  color: var(--ivory-dim);
-  font-weight: 300;
-}
-.countdown__sep {
-  font-family: var(--font-serif);
-  font-size: 2.4rem;
-  color: var(--gold-dim);
-  line-height: 1;
-  padding-top: 0.45rem;
-  opacity: 0.6;
-}
 
 /* ---- Notify form ---- */
 .notify {
@@ -308,9 +265,6 @@ body  {
 @media (max-width: 520px) {
   .container { padding: 2.5rem 1.2rem 2rem; }
   .logo-svg  { width: 155px; height: 155px; }
-  .countdown { gap: 0.3rem; }
-  .countdown__unit { min-width: 56px; }
-  .countdown__num  { min-width: 56px; font-size: 1.8rem; padding: 0.4rem 0.5rem; }
   .notify-form { flex-direction: column; }
   .notify-form button { padding: 0.85rem; }
 }
