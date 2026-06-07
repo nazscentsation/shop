@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 130" width="680" height="130">
+  <defs>
+    <linearGradient id="gold" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#ffe680"/>
+      <stop offset="25%"  stop-color="#d4a520"/>
+      <stop offset="55%"  stop-color="#f0d060"/>
+      <stop offset="80%"  stop-color="#b8860b"/>
+      <stop offset="100%" stop-color="#e0c040"/>
+    </linearGradient>
+    <linearGradient id="fade" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%"   stop-color="#C9A84C" stop-opacity="0"/>
+      <stop offset="30%"  stop-color="#C9A84C" stop-opacity="0.85"/>
+      <stop offset="70%"  stop-color="#C9A84C" stop-opacity="0.85"/>
+      <stop offset="100%" stop-color="#C9A84C" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="soft">
+      <feGaussianBlur stdDeviation="0.7" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Perfume mist — top left corner -->
+  <g opacity="0.52" filter="url(#glow)">
+    <circle cx="60"  cy="18" r="2.2" fill="#e8c050"/>
+    <circle cx="74"  cy="10" r="1.4" fill="#C9A84C"/>
+    <circle cx="89"  cy="7"  r="1.0" fill="#d4a030"/>
+    <circle cx="48"  cy="28" r="1.5" fill="#C9A84C"/>
+    <circle cx="38"  cy="16" r="0.8" fill="#e8c050"/>
+    <circle cx="100" cy="15" r="0.8" fill="#C9A84C"/>
+    <circle cx="80"  cy="22" r="0.7" fill="#d4a030"/>
+    <circle cx="55"  cy="36" r="1.0" fill="#C9A84C"/>
+    <circle cx="68"  cy="31" r="1.3" fill="#e8c050"/>
+    <circle cx="33"  cy="32" r="0.5" fill="#C9A84C"/>
+    <circle cx="110" cy="24" r="0.5" fill="#d4a030"/>
+    <circle cx="90"  cy="32" r="0.6" fill="#C9A84C"/>
+  </g>
+
+  <!-- Arabesque scroll — left -->
+  <g opacity="0.4" fill="none" stroke="#C9A84C" stroke-width="0.8">
+    <path d="M 32 65 Q 16 50 26 36 Q 38 22 54 34 Q 66 46 52 58"/>
+    <path d="M 32 65 Q 18 80 30 92 Q 44 104 56 93"/>
+    <circle cx="32" cy="65" r="1.8" fill="#C9A84C" stroke="none"/>
+  </g>
+
+  <!-- Arabesque scroll — right -->
+  <g opacity="0.4" fill="none" stroke="#C9A84C" stroke-width="0.8">
+    <path d="M 648 65 Q 664 50 654 36 Q 642 22 626 34 Q 614 46 628 58"/>
+    <path d="M 648 65 Q 662 80 650 92 Q 636 104 624 93"/>
+    <circle cx="648" cy="65" r="1.8" fill="#C9A84C" stroke="none"/>
+  </g>
+
+  <!-- Top rule pair -->
+  <line x1="78"  y1="36" x2="300" y2="36" stroke="url(#fade)" stroke-width="0.55"/>
+  <line x1="78"  y1="39" x2="300" y2="39" stroke="url(#fade)" stroke-width="0.25" opacity="0.4"/>
+  <line x1="380" y1="36" x2="602" y2="36" stroke="url(#fade)" stroke-width="0.55"/>
+  <line x1="380" y1="39" x2="602" y2="39" stroke="url(#fade)" stroke-width="0.25" opacity="0.4"/>
+
+  <!-- Crown ornament — centre -->
+  <g filter="url(#soft)" opacity="0.92">
+    <path d="M 340 24 L 340 36" stroke="#C9A84C" stroke-width="0.7"/>
+    <path d="M 328 32 L 340 36 L 352 32" fill="none" stroke="#C9A84C" stroke-width="0.7"/>
+    <path d="M 318 28 L 340 36 L 362 28" fill="none" stroke="#C9A84C" stroke-width="0.45" opacity="0.5"/>
+    <circle cx="340" cy="36" r="2.8" fill="url(#gold)"/>
+    <circle cx="318" cy="28" r="1.4" fill="#C9A84C"/>
+    <circle cx="362" cy="28" r="1.4" fill="#C9A84C"/>
+    <circle cx="340" cy="22" r="1.1" fill="#C9A84C"/>
+  </g>
+
+  <!-- NAZSCENTSATION — full name, italic metallic serif -->
+  <text
+    x="340" y="78"
+    text-anchor="middle"
+    dominant-baseline="middle"
+    font-family="Georgia,'Times New Roman',serif"
+    font-size="36"
+    font-style="italic"
+    font-weight="400"
+    letter-spacing="7"
+    fill="url(#gold)"
+    filter="url(#soft)"
+  >NAZSCENTSATION</text>
+
+  <!-- Bottom separator with leaf flourish -->
+  <line x1="78"  y1="96" x2="290" y2="96" stroke="url(#fade)" stroke-width="0.6"/>
+  <path d="M 315 92 Q 340 86 365 92 Q 340 100 315 92 Z" fill="#C9A84C" opacity="0.55"/>
+  <circle cx="340" cy="96" r="1.5" fill="url(#gold)"/>
+  <line x1="390" y1="96" x2="602" y2="96" stroke="url(#fade)" stroke-width="0.6"/>
+
+  <!-- Tagline -->
+  <text
+    x="340" y="110"
+    text-anchor="middle"
+    font-family="Georgia,'Times New Roman',serif"
+    font-size="7"
+    letter-spacing="5.5"
+    fill="#C9A84C"
+    opacity="0.58"
+  >LUXURY  ·  FRAGRANCE  ·  ARTISTRY</text>
+
+  <!-- Bottom thin rule -->
+  <line x1="130" y1="120" x2="550" y2="120" stroke="url(#fade)" stroke-width="0.35"/>
+</svg>

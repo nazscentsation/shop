@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Verify Email — Nazscentsation</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/logo.svg"/>
+  <link rel="stylesheet" href="assets/css/style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet"/>
+</head>
+<body>
+  <div class="glow glow--top"></div>
+  <main class="container" style="justify-content:center;min-height:100vh">
+    <header class="logo-wrap">
+      <a href="/"><img src="assets/images/logo.svg" alt="Nazscentsation" class="logo-img"/></a>
+    </header>
+    <div id="verifyStatus" style="text-align:center;padding:2rem 0">
+      <p class="eyebrow">Email Verification</p>
+      <p class="subtext" id="verifyMsg">Verifying your email address&hellip;</p>
+      <div style="margin-top:2rem" id="verifyActions" hidden>
+        <a href="/" class="ns-btn-gold" style="display:inline-block;padding:0.9rem 2.4rem;text-decoration:none;font-size:0.72rem;letter-spacing:0.26em;text-transform:uppercase;background:#C9A84C;color:#0a0a0a;border-radius:2px">Return to Home</a>
+      </div>
+    </div>
+  </main>
+  <script src="assets/js/app.js"></script>
+  <script>
+    (async () => {
+      const token = new URLSearchParams(window.location.search).get('token');
+      const msg   = document.getElementById('verifyMsg');
+      const acts  = document.getElementById('verifyActions');
+
+      if (!token) {
+        msg.textContent = 'Invalid verification link.';
+        acts.hidden = false;
+        return;
+      }
+
+      const { ok, data } = await NS.api('POST', '/api/auth/verify-email?token=' + encodeURIComponent(token));
+      msg.textContent = ok
+        ? (data.message || 'Email verified! You can now sign in.')
+        : (data.error   || 'This verification link is invalid or has expired.');
+      acts.hidden = false;
+    })();
+  </script>
+</body>
+</html>

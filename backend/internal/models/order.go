@@ -22,19 +22,20 @@ type OrderItem struct {
 }
 
 type Order struct {
-	ID         int64       `json:"id"`
-	UserID     int64       `json:"user_id"`
-	Status     OrderStatus `json:"status"`
-	Total      float64     `json:"total"`
-	Items      []OrderItem `json:"items"`
-	ShipName   string      `json:"ship_name"`
-	ShipLine1  string      `json:"ship_line1"`
-	ShipLine2  string      `json:"ship_line2,omitempty"`
-	ShipCity   string      `json:"ship_city"`
-	ShipCountry string     `json:"ship_country"`
-	ShipPostal string      `json:"ship_postal"`
-	CreatedAt  time.Time   `json:"created_at"`
-	UpdatedAt  time.Time   `json:"updated_at"`
+	ID            int64       `json:"id"`
+	UserID        int64       `json:"user_id"`
+	Status        OrderStatus `json:"status"`
+	Total         float64     `json:"total"`
+	Items         []OrderItem `json:"items"`
+	PaymentMethod string      `json:"payment_method"`
+	ShipName      string      `json:"ship_name"`
+	ShipLine1     string      `json:"ship_line1"`
+	ShipLine2     string      `json:"ship_line2,omitempty"`
+	ShipCity      string      `json:"ship_city"`
+	ShipCountry   string      `json:"ship_country"`
+	ShipPostal    string      `json:"ship_postal"`
+	CreatedAt     time.Time   `json:"created_at"`
+	UpdatedAt     time.Time   `json:"updated_at"`
 }
 
 type CreateOrderRequest struct {
@@ -42,10 +43,11 @@ type CreateOrderRequest struct {
 		ProductID int64 `json:"product_id"`
 		Quantity  int   `json:"quantity"`
 	} `json:"items"`
-	ShipName    string `json:"ship_name"`
-	ShipLine1   string `json:"ship_line1"`
-	ShipLine2   string `json:"ship_line2"`
-	ShipCity    string `json:"ship_city"`
-	ShipCountry string `json:"ship_country"`
-	ShipPostal  string `json:"ship_postal"`
+	PaymentMethod string `json:"payment_method"`
+	ShipName      string `json:"ship_name"`
+	ShipLine1     string `json:"ship_line1"`
+	ShipLine2     string `json:"ship_line2"`
+	ShipCity      string `json:"ship_city"`
+	ShipCountry   string `json:"ship_country"`
+	ShipPostal    string `json:"ship_postal"`
 }

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Management — Nazscentsation</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/logo.svg"/>
+  <link rel="stylesheet" href="assets/css/shop.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+<div class="s-portal-wrap">
+
+  <!-- Sidebar -->
+  <aside class="s-portal-sidebar">
+    <div class="s-portal-logo">
+      <a href="/portal.html"><img src="assets/images/logo.svg" alt="Nazscentsation"/></a>
+    </div>
+    <nav>
+      <ul class="s-portal-nav">
+        <li><a href="#" class="active" data-panel="dashboard">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+          Dashboard
+        </a></li>
+        <li><a href="#" data-panel="products">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/></svg>
+          Products
+        </a></li>
+        <li><a href="#" data-panel="orders">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M8 7h8M8 12h8M8 17h5"/></svg>
+          Orders
+        </a></li>
+        <li><a href="#" data-panel="tickets">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+          Tickets
+          <span id="openTicketCount" hidden style="margin-left:auto;background:var(--gold-light);color:#0a0a0a;border-radius:10px;font-size:0.55rem;padding:1px 6px;font-weight:700"></span>
+        </a></li>
+        <li><a href="#" data-panel="subscribers">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+          Subscribers
+        </a></li>
+        <li><a href="#" data-panel="users">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+          Customers
+        </a></li>
+        <li class="divider"></li>
+        <li><a href="/shop.html">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          View Shop
+        </a></li>
+        <li><button id="portalLogout">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+          Sign Out
+        </button></li>
+      </ul>
+    </nav>
+    <div class="s-portal-footer">Nazscentsation &copy; 2026</div>
+  </aside>
+
+  <!-- Main -->
+  <div class="s-portal-main">
+    <div class="s-portal-topbar">
+      <h1 class="s-portal-page-title" id="portalPageTitle">Dashboard</h1>
+      <span class="s-portal-admin-name" id="portalAdminName"></span>
+    </div>
+
+    <div class="s-portal-body">
+
+      <!-- Dashboard panel -->
+      <div class="s-portal-panel active" id="panelDashboard">
+        <div class="s-stats" id="statsRow">
+          <div class="s-stat-card"><p class="s-stat-label">Products</p><p class="s-stat-value" id="statProducts">—</p></div>
+          <div class="s-stat-card"><p class="s-stat-label">Orders</p><p class="s-stat-value" id="statOrders">—</p></div>
+          <div class="s-stat-card"><p class="s-stat-label">Open Tickets</p><p class="s-stat-value" id="statTickets">—</p></div>
+          <div class="s-stat-card"><p class="s-stat-label">Subscribers</p><p class="s-stat-value" id="statSubs">—</p></div>
+          <div class="s-stat-card"><p class="s-stat-label">Customers</p><p class="s-stat-value" id="statUsers">—</p></div>
+        </div>
+
+        <p style="font-size:0.72rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-soft);margin-bottom:1rem">Recent Orders</p>
+        <div class="s-table-wrap">
+          <table class="s-table">
+            <thead><tr><th>#</th><th>Customer</th><th>Total</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody id="dashRecentOrders"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Products panel -->
+      <div class="s-portal-panel" id="panelProducts">
+        <div class="s-panel-header">
+          <h2 class="s-panel-title">Products</h2>
+          <button class="s-btn s-btn--gold" id="addProductBtn">+ Add Product</button>
+        </div>
+        <div class="s-table-wrap">
+          <table class="s-table">
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Discount</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="productsBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Product form modal -->
+      <div class="s-modal-backdrop" id="productFormModal" hidden>
+        <div class="s-modal" style="max-width:600px">
+          <button class="s-modal-close" id="productFormClose">&times;</button>
+          <h2 class="s-modal-title" id="productFormTitle">Add Product</h2>
+          <input type="hidden" id="productFormId"/>
+          <div class="s-form-row">
+            <div class="s-field" style="grid-column:1/-1">
+              <label for="pName">Product Name *</label>
+              <input type="text" id="pName"/>
+            </div>
+          </div>
+          <div class="s-field">
+            <label for="pDesc">Description</label>
+            <textarea id="pDesc" rows="3"></textarea>
+          </div>
+          <div class="s-form-row">
+            <div class="s-field">
+              <label for="pPrice">Price (£) *</label>
+              <input type="number" id="pPrice" min="0" step="0.01"/>
+            </div>
+            <div class="s-field">
+              <label for="pDiscount">Discount %</label>
+              <input type="number" id="pDiscount" min="0" max="100" step="1" value="0"/>
+            </div>
+          </div>
+          <div class="s-form-row">
+            <div class="s-field">
+              <label for="pStock">Stock Quantity</label>
+              <input type="number" id="pStock" min="0" step="1" value="0"/>
+            </div>
+            <div class="s-field">
+              <label for="pCategory">Category</label>
+              <input type="text" id="pCategory" placeholder="e.g. Eau de Parfum"/>
+            </div>
+          </div>
+          <div class="s-field">
+            <label for="pImage">Image URL</label>
+            <input type="url" id="pImage" placeholder="https://…"/>
+            <img id="pImagePreview" class="s-img-preview" style="margin-top:0.5rem;display:none"/>
+          </div>
+          <div class="s-field">
+            <label for="pNotes">Fragrance Notes <span style="font-size:0.62rem;color:var(--text-soft);text-transform:none;letter-spacing:0">(comma-separated)</span></label>
+            <input type="text" id="pNotes" placeholder="Oud, Rose, Amber, Musk"/>
+          </div>
+          <div class="s-field" id="pActiveWrap" hidden>
+            <label style="flex-direction:row;align-items:center;gap:0.5rem;cursor:pointer">
+              <input type="checkbox" id="pActive" style="width:auto"/>
+              Active (visible in shop)
+            </label>
+          </div>
+          <p class="s-feedback" id="productFormFeedback"></p>
+          <button class="s-btn s-btn--gold u-w-full" id="saveProductBtn">Save Product</button>
+        </div>
+      </div>
+
+      <!-- Orders panel -->
+      <div class="s-portal-panel" id="panelOrders">
+        <div class="s-panel-header">
+          <h2 class="s-panel-title">Orders</h2>
+        </div>
+        <div class="s-table-wrap">
+          <table class="s-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Customer</th>
+                <th>Payment</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Date</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="adminOrdersBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Order status modal -->
+      <div class="s-modal-backdrop" id="orderStatusModal" hidden>
+        <div class="s-modal" style="max-width:380px">
+          <button class="s-modal-close" id="orderStatusClose">&times;</button>
+          <h2 class="s-modal-title">Update Order Status</h2>
+          <p style="font-size:0.8rem;color:var(--text-soft);margin-bottom:1.2rem" id="orderStatusLabel"></p>
+          <input type="hidden" id="orderStatusId"/>
+          <div class="s-field">
+            <label for="orderStatusSelect">New Status</label>
+            <select id="orderStatusSelect">
+              <option value="pending">Pending</option>
+              <option value="paid">Paid</option>
+              <option value="shipped">Shipped</option>
+              <option value="delivered">Delivered</option>
+              <option value="cancelled">Cancelled</option>
+            </select>
+          </div>
+          <p class="s-feedback" id="orderStatusFeedback"></p>
+          <button class="s-btn s-btn--gold u-w-full" id="saveOrderStatusBtn">Update Status</button>
+        </div>
+      </div>
+
+      <!-- Tickets panel -->
+      <div class="s-portal-panel" id="panelTickets">
+        <div class="s-panel-header">
+          <h2 class="s-panel-title">Support Tickets</h2>
+        </div>
+        <div class="s-table-wrap">
+          <table class="s-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Customer</th>
+                <th>Subject</th>
+                <th>Status</th>
+                <th>Updated</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="adminTicketsBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Ticket reply modal -->
+      <div class="s-modal-backdrop" id="ticketReplyModal" hidden>
+        <div class="s-modal" style="max-width:620px">
+          <button class="s-modal-close" id="ticketReplyClose">&times;</button>
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;margin-bottom:1.4rem">
+            <div>
+              <h2 class="s-modal-title" id="adminThreadTitle" style="margin-bottom:0.3rem">Ticket</h2>
+              <p id="adminThreadMeta" style="font-size:0.72rem;color:var(--text-soft);letter-spacing:0.06em"></p>
+            </div>
+            <div style="display:flex;gap:0.6rem;align-items:center">
+              <span id="adminThreadStatus"></span>
+              <button class="s-btn s-btn--ghost s-btn--icon" id="toggleTicketStatusBtn" style="font-size:0.65rem"></button>
+            </div>
+          </div>
+          <input type="hidden" id="adminThreadId"/>
+          <div class="s-ticket-thread" id="adminThreadMessages"></div>
+          <div class="s-field" style="margin-top:1rem">
+            <label for="adminReplyBody">Reply to Customer</label>
+            <textarea id="adminReplyBody" rows="4" placeholder="Type your reply…"></textarea>
+          </div>
+          <p class="s-feedback" id="adminReplyFeedback"></p>
+          <button class="s-btn s-btn--gold" id="sendAdminReplyBtn">Send Reply</button>
+        </div>
+      </div>
+
+      <!-- Subscribers panel -->
+      <div class="s-portal-panel" id="panelSubscribers">
+        <div class="s-panel-header">
+          <h2 class="s-panel-title">Email Subscribers</h2>
+          <span id="subCount" style="font-size:0.72rem;color:var(--text-soft);letter-spacing:0.1em"></span>
+        </div>
+        <div class="s-table-wrap">
+          <table class="s-table">
+            <thead><tr><th>Email</th><th>Subscribed</th></tr></thead>
+            <tbody id="subscribersBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Customers panel -->
+      <div class="s-portal-panel" id="panelUsers">
+        <div class="s-panel-header">
+          <h2 class="s-panel-title">Customers</h2>
+        </div>
+        <div class="s-table-wrap">
+          <table class="s-table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Role</th>
+                <th>Verified</th>
+                <th>Joined</th>
+              </tr>
+            </thead>
+            <tbody id="usersBody"></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /portal-body -->
+  </div><!-- /portal-main -->
+</div><!-- /portal-wrap -->
+
+<script src="assets/js/app.js"></script>
+<script src="assets/js/portal.js"></script>
+</body>
+</html>
