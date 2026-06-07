@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shop — Nazscentsation</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/logo.svg"/>
+  <link rel="stylesheet" href="assets/css/shop.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="s-nav">
+    <a href="/shop.html" class="s-nav-logo" aria-label="Nazscentsation home">
+      <img src="assets/images/logo-dark.svg" alt="Nazscentsation"/>
+    </a>
+    <ul class="s-nav-links">
+      <li><a href="/shop.html" class="active">Shop</a></li>
+      <li><a href="/account.html">My Account</a></li>
+    </ul>
+    <div class="s-nav-actions">
+      <span class="s-nav-user" id="navUser"></span>
+      <button class="s-cart-btn" id="cartToggle" aria-label="Shopping cart">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M6 2 3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/>
+          <line x1="3" y1="6" x2="21" y2="6"/>
+          <path d="M16 10a4 4 0 01-8 0"/>
+        </svg>
+        <span class="s-cart-badge" id="cartCount" hidden>0</span>
+      </button>
+      <button class="s-btn s-btn--ghost" id="logoutBtn">Sign out</button>
+    </div>
+  </nav>
+
+  <!-- Hero -->
+  <section class="s-hero">
+    <p class="s-hero-eyebrow">New Collection 2026</p>
+    <h1 class="s-hero-title">Scents that tell<br/>your story</h1>
+    <p class="s-hero-sub">Handcrafted luxury fragrances. Each bottle holds a world of rare ingredients and timeless artistry.</p>
+    <a href="#collection" class="s-hero-cta">Explore Collection</a>
+  </section>
+
+  <!-- Product listing -->
+  <section class="s-section" id="collection">
+    <div class="u-flex u-justify-between u-items-center u-mb-2" style="flex-wrap:wrap;gap:1rem">
+      <div>
+        <h2 class="s-section-title">Our Collection</h2>
+        <p class="s-section-sub">Rare · Handcrafted · Timeless</p>
+      </div>
+    </div>
+
+    <!-- Category filters -->
+    <div class="s-filters" id="filterBar">
+      <button class="s-filter-btn active" data-cat="">All</button>
+    </div>
+
+    <!-- Grid -->
+    <div class="s-grid" id="productGrid">
+      <p style="color:var(--text-soft);font-size:0.82rem;letter-spacing:0.06em;font-style:italic">
+        Loading collection&hellip;
+      </p>
+    </div>
+
+    <!-- Pagination -->
+    <div class="u-flex u-items-center u-justify-between u-mt-2" id="pagination" hidden>
+      <button class="s-btn s-btn--ghost" id="prevPage">&larr; Previous</button>
+      <span id="pageInfo" style="font-size:0.72rem;letter-spacing:0.1em;color:var(--text-soft)"></span>
+      <button class="s-btn s-btn--ghost" id="nextPage">Next &rarr;</button>
+    </div>
+  </section>
+
+  <!-- Cart drawer overlay -->
+  <div class="s-cart-overlay" id="cartOverlay"></div>
+
+  <!-- Cart drawer -->
+  <aside class="s-cart-drawer" id="cartDrawer" aria-label="Shopping cart">
+    <div class="s-cart-header">
+      <h2 class="s-cart-title">Your Cart</h2>
+      <button class="s-cart-close" id="cartClose" aria-label="Close cart">&times;</button>
+    </div>
+    <div class="s-cart-items" id="cartItems">
+      <p class="s-cart-empty">Your cart is empty.</p>
+    </div>
+    <div class="s-cart-footer">
+      <div class="s-cart-total">
+        <span class="s-cart-total-label">Total</span>
+        <span class="s-cart-total-amount" id="cartTotal">£0.00</span>
+      </div>
+      <button class="s-btn s-btn--gold u-w-full" id="checkoutBtn">Proceed to Checkout</button>
+    </div>
+  </aside>
+
+  <!-- Checkout modal -->
+  <div class="s-modal-backdrop" id="checkoutModal" hidden>
+    <div class="s-modal">
+      <button class="s-modal-close" id="checkoutClose">&times;</button>
+      <h2 class="s-modal-title">Checkout</h2>
+
+      <div class="s-form-row">
+        <div class="s-field">
+          <label for="shipName">Full Name</label>
+          <input type="text" id="shipName" autocomplete="name"/>
+        </div>
+        <div class="s-field">
+          <label for="shipPostal">Postal Code</label>
+          <input type="text" id="shipPostal" autocomplete="postal-code"/>
+        </div>
+      </div>
+      <div class="s-field">
+        <label for="shipLine1">Address Line 1</label>
+        <input type="text" id="shipLine1" autocomplete="address-line1"/>
+      </div>
+      <div class="s-field">
+        <label for="shipLine2">Address Line 2 (optional)</label>
+        <input type="text" id="shipLine2" autocomplete="address-line2"/>
+      </div>
+      <div class="s-form-row">
+        <div class="s-field">
+          <label for="shipCity">City</label>
+          <input type="text" id="shipCity" autocomplete="address-level2"/>
+        </div>
+        <div class="s-field">
+          <label for="shipCountry">Country</label>
+          <input type="text" id="shipCountry" value="United Kingdom" autocomplete="country-name"/>
+        </div>
+      </div>
+      <div class="s-field">
+        <label for="payMethod">Payment Method</label>
+        <select id="payMethod">
+          <option value="">Select payment method</option>
+          <option value="card">Credit / Debit Card</option>
+          <option value="paypal">PayPal</option>
+          <option value="bank_transfer">Bank Transfer</option>
+          <option value="cash_on_delivery">Cash on Delivery</option>
+        </select>
+      </div>
+
+      <!-- Order summary -->
+      <div style="background:var(--bg);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin:1rem 0">
+        <p style="font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-soft);margin-bottom:0.8rem">Order Summary</p>
+        <div id="checkoutSummary" style="font-size:0.82rem;display:flex;flex-direction:column;gap:0.4rem"></div>
+        <div style="border-top:1px solid var(--border);margin-top:0.8rem;padding-top:0.8rem;display:flex;justify-content:space-between">
+          <span style="font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--text-soft)">Total</span>
+          <span style="font-family:var(--font-serif);font-size:1.2rem;font-weight:600" id="checkoutTotal"></span>
+        </div>
+      </div>
+
+      <p class="s-feedback" id="checkoutFeedback"></p>
+      <button class="s-btn s-btn--gold u-w-full" id="placeOrderBtn">Place Order</button>
+    </div>
+  </div>
+
+  <!-- Product detail modal -->
+  <div class="s-modal-backdrop" id="productModal" hidden>
+    <div class="s-modal" id="productModalContent">
+      <button class="s-modal-close" id="productModalClose">&times;</button>
+    </div>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/shop.js"></script>
+</body>
+</html>

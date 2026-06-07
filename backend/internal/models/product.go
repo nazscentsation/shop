@@ -8,6 +8,7 @@ type Product struct {
 	Slug        string    `json:"slug"`
 	Description string    `json:"description"`
 	Price       float64   `json:"price"`
+	DiscountPct int       `json:"discount_pct"`
 	Stock       int       `json:"stock"`
 	ImageURL    string    `json:"image_url"`
 	Category    string    `json:"category"`
@@ -21,10 +22,23 @@ type CreateProductRequest struct {
 	Name        string   `json:"name"`
 	Description string   `json:"description"`
 	Price       float64  `json:"price"`
+	DiscountPct int      `json:"discount_pct"`
 	Stock       int      `json:"stock"`
 	ImageURL    string   `json:"image_url"`
 	Category    string   `json:"category"`
 	Notes       []string `json:"notes"`
+}
+
+type UpdateProductRequest struct {
+	Name        *string  `json:"name"`
+	Description *string  `json:"description"`
+	Price       *float64 `json:"price"`
+	DiscountPct *int     `json:"discount_pct"`
+	Stock       *int     `json:"stock"`
+	ImageURL    *string  `json:"image_url"`
+	Category    *string  `json:"category"`
+	Notes       []string `json:"notes"`
+	Active      *bool    `json:"active"`
 }
 
 type ProductListResponse struct {

@@ -10,14 +10,24 @@ const (
 )
 
 type User struct {
-	ID           int64     `json:"id"`
-	Email        string    `json:"email"`
-	PasswordHash string    `json:"-"`
-	FirstName    string    `json:"first_name"`
-	LastName     string    `json:"last_name"`
-	Role         Role      `json:"role"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
+	ID            int64     `json:"id"`
+	Email         string    `json:"email"`
+	PasswordHash  string    `json:"-"`
+	FirstName     string    `json:"first_name"`
+	LastName      string    `json:"last_name"`
+	Phone         string    `json:"phone"`
+	Address       string    `json:"address"`
+	Role          Role      `json:"role"`
+	EmailVerified bool      `json:"email_verified"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
+}
+
+type UpdateProfileRequest struct {
+	FirstName string `json:"first_name"`
+	LastName  string `json:"last_name"`
+	Phone     string `json:"phone"`
+	Address   string `json:"address"`
 }
 
 type CreateUserRequest struct {

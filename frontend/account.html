@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>My Account — Nazscentsation</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/logo.svg"/>
+  <link rel="stylesheet" href="assets/css/shop.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet"/>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="s-nav">
+    <a href="/shop.html" class="s-nav-logo" aria-label="Nazscentsation home">
+      <img src="assets/images/logo-dark.svg" alt="Nazscentsation"/>
+    </a>
+    <ul class="s-nav-links">
+      <li><a href="/shop.html">Shop</a></li>
+      <li><a href="/account.html" class="active">My Account</a></li>
+    </ul>
+    <div class="s-nav-actions">
+      <button class="s-btn s-btn--ghost" id="logoutBtn">Sign out</button>
+    </div>
+  </nav>
+
+  <!-- Account layout -->
+  <div class="s-account-wrap">
+
+    <!-- Sidebar -->
+    <aside class="s-sidebar">
+      <div class="s-sidebar-user">
+        <div class="s-sidebar-avatar" id="sidebarAvatar">?</div>
+        <p class="s-sidebar-name" id="sidebarName">Loading…</p>
+        <p class="s-sidebar-email" id="sidebarEmail"></p>
+      </div>
+      <nav>
+        <ul class="s-sidebar-nav">
+          <li><a href="#" class="active" data-panel="profile">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+            Profile
+          </a></li>
+          <li><a href="#" data-panel="orders">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="3" width="20" height="18" rx="2"/><path d="M8 7h8M8 12h8M8 17h5"/></svg>
+            Orders
+          </a></li>
+          <li><a href="#" data-panel="enquiries">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+            Enquiries
+            <span id="openTicketsBadge" hidden style="margin-left:auto;background:var(--gold);color:#fff;border-radius:10px;font-size:0.58rem;padding:1px 6px;font-weight:600"></span>
+          </a></li>
+          <li class="divider"></li>
+          <li><a href="#" data-panel="password">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+            Change Password
+          </a></li>
+          <li class="divider"></li>
+          <li><button id="logoutSide">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9"/></svg>
+            Sign Out
+          </button></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="s-content">
+
+      <!-- Profile panel -->
+      <div class="s-content-panel active" id="panelProfile">
+        <h2 class="s-content-title">Personal Information</h2>
+        <p class="s-content-sub">Manage your details</p>
+        <form id="profileForm" style="max-width:520px">
+          <div class="s-form-row">
+            <div class="s-field">
+              <label for="pfFirst">First Name</label>
+              <input type="text" id="pfFirst" autocomplete="given-name"/>
+            </div>
+            <div class="s-field">
+              <label for="pfLast">Last Name</label>
+              <input type="text" id="pfLast" autocomplete="family-name"/>
+            </div>
+          </div>
+          <div class="s-field">
+            <label>Email Address</label>
+            <input type="email" id="pfEmail" disabled style="background:#f0ede8;cursor:not-allowed"/>
+          </div>
+          <div class="s-field">
+            <label for="pfPhone">Phone Number</label>
+            <input type="tel" id="pfPhone" autocomplete="tel"/>
+          </div>
+          <div class="s-field">
+            <label for="pfAddress">Delivery Address</label>
+            <textarea id="pfAddress" rows="3" autocomplete="street-address" placeholder="House / street / city / postcode"></textarea>
+          </div>
+          <p class="s-feedback" id="profileFeedback"></p>
+          <button type="submit" class="s-btn s-btn--gold" id="profileBtn">Save Changes</button>
+        </form>
+      </div>
+
+      <!-- Orders panel -->
+      <div class="s-content-panel" id="panelOrders">
+        <h2 class="s-content-title">My Orders</h2>
+        <p class="s-content-sub">Your purchase history</p>
+        <div class="s-table-wrap">
+          <table class="s-table" id="ordersTable">
+            <thead>
+              <tr>
+                <th>Order #</th>
+                <th>Date</th>
+                <th>Payment</th>
+                <th>Status</th>
+                <th>Total</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="ordersBody">
+              <tr><td colspan="6" style="text-align:center;color:var(--text-soft);font-style:italic;padding:2rem">Loading orders…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Order detail modal -->
+      <div class="s-modal-backdrop" id="orderDetailModal" hidden>
+        <div class="s-modal">
+          <button class="s-modal-close" id="orderDetailClose">&times;</button>
+          <h2 class="s-modal-title">Order Details</h2>
+          <div id="orderDetailContent"></div>
+        </div>
+      </div>
+
+      <!-- Enquiries panel -->
+      <div class="s-content-panel" id="panelEnquiries">
+        <div class="s-panel-header">
+          <div>
+            <h2 class="s-content-title">Enquiries &amp; Support</h2>
+            <p class="s-content-sub">Your support tickets</p>
+          </div>
+          <button class="s-btn s-btn--gold" id="newTicketBtn">+ New Enquiry</button>
+        </div>
+        <div class="s-table-wrap">
+          <table class="s-table">
+            <thead>
+              <tr>
+                <th>Ticket #</th>
+                <th>Subject</th>
+                <th>Status</th>
+                <th>Last Updated</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="ticketsBody">
+              <tr><td colspan="5" style="text-align:center;color:var(--text-soft);font-style:italic;padding:2rem">Loading enquiries…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- New ticket modal -->
+      <div class="s-modal-backdrop" id="newTicketModal" hidden>
+        <div class="s-modal">
+          <button class="s-modal-close" id="newTicketClose">&times;</button>
+          <h2 class="s-modal-title">New Enquiry</h2>
+          <div class="s-field">
+            <label for="ticketSubject">Subject</label>
+            <input type="text" id="ticketSubject" placeholder="e.g. Order inquiry, Product question…"/>
+          </div>
+          <div class="s-field">
+            <label for="ticketMessage">Message</label>
+            <textarea id="ticketMessage" rows="5" placeholder="Describe your enquiry in detail…"></textarea>
+          </div>
+          <p class="s-feedback" id="newTicketFeedback"></p>
+          <button class="s-btn s-btn--gold u-w-full" id="submitTicketBtn">Submit Enquiry</button>
+        </div>
+      </div>
+
+      <!-- Ticket thread modal -->
+      <div class="s-modal-backdrop" id="ticketThreadModal" hidden>
+        <div class="s-modal" style="max-width:600px">
+          <button class="s-modal-close" id="threadClose">&times;</button>
+          <h2 class="s-modal-title" id="threadTitle">Ticket</h2>
+          <p id="threadStatus"></p>
+          <div class="s-ticket-thread" id="threadMessages"></div>
+          <div id="threadReplyWrap">
+            <div class="s-field">
+              <label for="threadReply">Reply</label>
+              <textarea id="threadReply" rows="3" placeholder="Type your reply…"></textarea>
+            </div>
+            <p class="s-feedback" id="threadFeedback"></p>
+            <button class="s-btn s-btn--gold" id="sendReplyBtn">Send Reply</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Change password panel -->
+      <div class="s-content-panel" id="panelPassword">
+        <h2 class="s-content-title">Change Password</h2>
+        <p class="s-content-sub">Keep your account secure</p>
+        <form id="passwordForm" style="max-width:400px">
+          <div class="s-field">
+            <label for="pwCurrent">Current Password</label>
+            <input type="password" id="pwCurrent" autocomplete="current-password"/>
+          </div>
+          <div class="s-field">
+            <label for="pwNew">New Password <span style="font-size:0.65rem;color:var(--text-soft);text-transform:none;letter-spacing:0">(min. 8 characters)</span></label>
+            <input type="password" id="pwNew" autocomplete="new-password"/>
+          </div>
+          <div class="s-field">
+            <label for="pwConfirm">Confirm New Password</label>
+            <input type="password" id="pwConfirm" autocomplete="new-password"/>
+          </div>
+          <p class="s-feedback" id="passwordFeedback"></p>
+          <button type="submit" class="s-btn s-btn--gold" id="passwordBtn">Update Password</button>
+        </form>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/account.js"></script>
+</body>
+</html>

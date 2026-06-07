@@ -12,6 +12,14 @@ type Config struct {
 	JWTSecret   string
 	Environment string
 	AllowOrigin string
+	ComingSoon  bool
+	SiteURL     string
+	SMTPHost    string
+	SMTPPort    string
+	SMTPUser    string
+	SMTPPass    string
+	SMTPFrom    string
+	AdminEmail  string
 }
 
 func Load() (*Config, error) {
@@ -21,6 +29,14 @@ func Load() (*Config, error) {
 		JWTSecret:   getEnv("JWT_SECRET", ""),
 		Environment: getEnv("ENVIRONMENT", "development"),
 		AllowOrigin: getEnv("ALLOW_ORIGIN", "http://localhost:3000"),
+		ComingSoon:  getEnv("COMING_SOON", "true") != "false",
+		SiteURL:     getEnv("SITE_URL", "http://localhost:8080"),
+		SMTPHost:    getEnv("SMTP_HOST", ""),
+		SMTPPort:    getEnv("SMTP_PORT", "587"),
+		SMTPUser:    getEnv("SMTP_USER", ""),
+		SMTPPass:    getEnv("SMTP_PASS", ""),
+		SMTPFrom:    getEnv("SMTP_FROM", ""),
+		AdminEmail:  getEnv("ADMIN_EMAIL", ""),
 	}
 
 	if cfg.DatabaseURL == "" {
