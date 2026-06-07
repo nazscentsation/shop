@@ -342,6 +342,7 @@ body  {
   display: flex;
   flex-direction: column;
   gap: 0.35rem;
+  min-width: 0;        /* prevent grid/flex overflow */
 }
 .ns-field label {
   font-size: 0.7rem;
@@ -358,6 +359,7 @@ body  {
   font-style: italic;
 }
 .ns-field input {
+  width: 100%;
   background: #0f0f0f;
   border: 1px solid var(--gold-dim);
   border-radius: 2px;
@@ -379,7 +381,9 @@ body  {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 0.8rem;
+  margin-bottom: 0;
 }
+.ns-field-row > .ns-field { min-width: 0; }
 
 .ns-modal-feedback {
   font-size: 0.76rem;
@@ -453,10 +457,18 @@ body  {
 
 /* ---- Responsive ---- */
 @media (max-width: 520px) {
-  .container { padding: 2.5rem 1.2rem 2rem; }
-  .logo-img  { width: 85vw; }
-  .notify-form { flex-direction: column; }
+  .container    { padding: 2.5rem 1.2rem 2rem; }
+  .logo-img     { width: 85vw; }
+  .notify-form  { flex-direction: column; }
   .notify-form button { padding: 0.85rem; }
   .ns-field-row { grid-template-columns: 1fr; }
-  .ns-modal { padding: 1.8rem 1.2rem 1.5rem; }
+  .ns-modal     { padding: 1.6rem 1.1rem 1.4rem; }
+  .ns-modal-title { font-size: 1.25rem; margin-bottom: 1.2rem; }
+  .ns-btn-gold  { padding: 0.85rem; font-size: 0.75rem; }
+}
+
+@media (max-width: 360px) {
+  .ns-modal     { padding: 1.3rem 0.9rem 1.2rem; }
+  .ns-field input { padding: 0.65rem 0.8rem; font-size: 0.82rem; }
+  .ns-modal-links { flex-direction: column; gap: 0.7rem; align-items: center; }
 }
