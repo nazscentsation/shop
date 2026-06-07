@@ -54,18 +54,33 @@
 })();
 
 // ── Hidden entry trigger ──────────────────────────────────────
-// The `ns-dot` element requires 3 clicks within 2 s to open the modal.
-// No obvious label or tooltip reveals its purpose.
+// Triple-click the dot within 2 s to auto-login as admin (dev only).
+// Falls back to the manual login modal if the dev endpoint is unavailable.
 (function initHiddenEntry() {
   const dot = document.getElementById('nsEntry');
   if (!dot) return;
   let clicks = 0, timer;
 
-  dot.addEventListener('click', () => {
+  dot.addEventListener('click', async () => {
     clicks++;
     clearTimeout(timer);
-    if (clicks >= 3) { clicks = 0; openModal(); return; }
-    timer = setTimeout(() => { clicks = 0; }, 2000);
+
+    if (clicks < 3) {
+      timer = setTimeout(() => { clicks = 0; }, 2000);
+      return;
+    }
+    clicks = 0;
+
+    // Try instant dev-login first
+    const res = await NS.api('POST', '/api/auth/dev-login');
+    if (res.ok) {
+      NS.setUser(res.data.user);
+      window.location.href = '/portal.html';
+      return;
+    }
+
+    // Production or no admin seeded yet — fall back to manual login modal
+    openModal('login');
   });
 })();
 

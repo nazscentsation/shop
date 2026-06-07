@@ -42,7 +42,7 @@ func main() {
 
 	// Handlers
 	notifyH  := handlers.NewNotifyHandler(db)
-	userH    := handlers.NewUserHandler(db, cfg.JWTSecret, mailer, cfg.SiteURL)
+	userH    := handlers.NewUserHandler(db, cfg.JWTSecret, mailer, cfg.SiteURL, cfg.Environment)
 	productH := handlers.NewProductHandler(db)
 	orderH   := handlers.NewOrderHandler(db)
 	ticketH  := handlers.NewTicketHandler(db, mailer, cfg.AdminEmail)
@@ -75,6 +75,7 @@ func main() {
 	mux.HandleFunc("POST /api/auth/resend-verification", userH.ResendVerification)
 	mux.HandleFunc("POST /api/auth/forgot-password",     userH.ForgotPassword)
 	mux.HandleFunc("POST /api/auth/reset-password",      userH.ResetPassword)
+	mux.HandleFunc("POST /api/auth/dev-login",           userH.DevLogin) // dev only — 403 in production
 	mux.HandleFunc("GET /api/products",                 productH.List)
 	mux.HandleFunc("GET /api/products/{slug}",          productH.Get)
 

@@ -21,10 +21,11 @@ type UserHandler struct {
 	jwtSecret string
 	mailer    *email.Mailer
 	siteURL   string
+	env       string
 }
 
-func NewUserHandler(db *database.DB, jwtSecret string, mailer *email.Mailer, siteURL string) *UserHandler {
-	return &UserHandler{db: db, jwtSecret: jwtSecret, mailer: mailer, siteURL: siteURL}
+func NewUserHandler(db *database.DB, jwtSecret string, mailer *email.Mailer, siteURL, env string) *UserHandler {
+	return &UserHandler{db: db, jwtSecret: jwtSecret, mailer: mailer, siteURL: siteURL, env: env}
 }
 
 // POST /api/auth/register
@@ -382,6 +383,38 @@ func (h *UserHandler) AdminList(w http.ResponseWriter, r *http.Request) {
 func (h *UserHandler) Logout(w http.ResponseWriter, r *http.Request) {
 	middleware.ClearAuthCookie(w)
 	utils.JSON(w, http.StatusOK, map[string]string{"message": "logged out"})
+}
+
+// POST /api/auth/dev-login
+// DEVELOPMENT ONLY — instantly logs in as the first admin user.
+// Returns 403 Forbidden in any environment other than "development".
+func (h *UserHandler) DevLogin(w http.ResponseWriter, r *http.Request) {
+	if h.env != "development" {
+		utils.Error(w, http.StatusForbidden, "not available in this environment")
+		return
+	}
+
+	var user models.User
+	err := h.db.QueryRowContext(r.Context(),
+		`SELECT id, email, first_name, last_name, phone, address,
+		        role, email_verified, created_at
+		 FROM users WHERE role = 'admin' ORDER BY id ASC LIMIT 1`,
+	).Scan(&user.ID, &user.Email, &user.FirstName, &user.LastName,
+		&user.Phone, &user.Address, &user.Role, &user.EmailVerified, &user.CreatedAt)
+	if err != nil {
+		utils.Error(w, http.StatusNotFound, "no admin account found — run: go run ./cmd/seed")
+		return
+	}
+
+	token, err := h.generateToken(&user)
+	if err != nil {
+		utils.Error(w, http.StatusInternalServerError, "could not generate token")
+		return
+	}
+
+	secure := r.TLS != nil || r.Header.Get("X-Forwarded-Proto") == "https"
+	middleware.SetAuthCookie(w, token, secure)
+	utils.JSON(w, http.StatusOK, map[string]any{"user": user})
 }
 
 func (h *UserHandler) generateToken(u *models.User) (string, error) {
