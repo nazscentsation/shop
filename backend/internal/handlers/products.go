@@ -28,16 +28,25 @@ func (h *ProductHandler) List(w http.ResponseWriter, r *http.Request) {
 	var err error
 	var total int
 
-	if category != "" {
+	isNew := q.Get("new") == "true"
+	switch {
+	case isNew:
 		rows, err = h.db.QueryContext(r.Context(),
-			`SELECT id, name, slug, description, price, discount_pct, stock, image_url, category, notes, active, created_at
+			`SELECT id, name, slug, description, price, discount_pct, stock, image_url, category, notes, active, is_new, created_at
+			 FROM products WHERE active = true AND is_new = true
+			 ORDER BY created_at DESC LIMIT $1 OFFSET $2`, size, offset)
+		h.db.QueryRowContext(r.Context(),
+			`SELECT COUNT(*) FROM products WHERE active = true AND is_new = true`).Scan(&total)
+	case category != "":
+		rows, err = h.db.QueryContext(r.Context(),
+			`SELECT id, name, slug, description, price, discount_pct, stock, image_url, category, notes, active, is_new, created_at
 			 FROM products WHERE active = true AND category = $1
 			 ORDER BY created_at DESC LIMIT $2 OFFSET $3`, category, size, offset)
 		h.db.QueryRowContext(r.Context(),
 			`SELECT COUNT(*) FROM products WHERE active = true AND category = $1`, category).Scan(&total)
-	} else {
+	default:
 		rows, err = h.db.QueryContext(r.Context(),
-			`SELECT id, name, slug, description, price, discount_pct, stock, image_url, category, notes, active, created_at
+			`SELECT id, name, slug, description, price, discount_pct, stock, image_url, category, notes, active, is_new, created_at
 			 FROM products WHERE active = true
 			 ORDER BY created_at DESC LIMIT $1 OFFSET $2`, size, offset)
 		h.db.QueryRowContext(r.Context(), `SELECT COUNT(*) FROM products WHERE active = true`).Scan(&total)
@@ -53,7 +62,7 @@ func (h *ProductHandler) List(w http.ResponseWriter, r *http.Request) {
 		p := &models.Product{}
 		if err := rows.Scan(&p.ID, &p.Name, &p.Slug, &p.Description, &p.Price,
 			&p.DiscountPct, &p.Stock, &p.ImageURL, &p.Category, pq.Array(&p.Notes),
-			&p.Active, &p.CreatedAt); err != nil {
+			&p.Active, &p.IsNew, &p.CreatedAt); err != nil {
 			continue
 		}
 		products = append(products, p)
@@ -71,10 +80,10 @@ func (h *ProductHandler) Get(w http.ResponseWriter, r *http.Request) {
 	slug := r.PathValue("slug")
 	p := &models.Product{}
 	err := h.db.QueryRowContext(r.Context(),
-		`SELECT id, name, slug, description, price, discount_pct, stock, image_url, category, notes, active, created_at
+		`SELECT id, name, slug, description, price, discount_pct, stock, image_url, category, notes, active, is_new, created_at
 		 FROM products WHERE slug = $1 AND active = true`, slug,
 	).Scan(&p.ID, &p.Name, &p.Slug, &p.Description, &p.Price,
-		&p.DiscountPct, &p.Stock, &p.ImageURL, &p.Category, pq.Array(&p.Notes), &p.Active, &p.CreatedAt)
+		&p.DiscountPct, &p.Stock, &p.ImageURL, &p.Category, pq.Array(&p.Notes), &p.Active, &p.IsNew, &p.CreatedAt)
 	if err != nil {
 		utils.Error(w, http.StatusNotFound, "product not found")
 		return
@@ -212,7 +221,7 @@ func (h *ProductHandler) Delete(w http.ResponseWriter, r *http.Request) {
 // GET /api/admin/products — includes inactive products
 func (h *ProductHandler) AdminList(w http.ResponseWriter, r *http.Request) {
 	rows, err := h.db.QueryContext(r.Context(),
-		`SELECT id, name, slug, description, price, discount_pct, stock, image_url, category, notes, active, created_at
+		`SELECT id, name, slug, description, price, discount_pct, stock, image_url, category, notes, active, is_new, created_at
 		 FROM products ORDER BY created_at DESC`)
 	if err != nil {
 		utils.Error(w, http.StatusInternalServerError, "query failed")
@@ -225,7 +234,7 @@ func (h *ProductHandler) AdminList(w http.ResponseWriter, r *http.Request) {
 		p := &models.Product{}
 		if err := rows.Scan(&p.ID, &p.Name, &p.Slug, &p.Description, &p.Price,
 			&p.DiscountPct, &p.Stock, &p.ImageURL, &p.Category, pq.Array(&p.Notes),
-			&p.Active, &p.CreatedAt); err != nil {
+			&p.Active, &p.IsNew, &p.CreatedAt); err != nil {
 			continue
 		}
 		products = append(products, p)

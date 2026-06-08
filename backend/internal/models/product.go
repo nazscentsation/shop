@@ -14,6 +14,7 @@ type Product struct {
 	Category    string    `json:"category"`
 	Notes       []string  `json:"notes"`
 	Active      bool      `json:"active"`
+	IsNew       bool      `json:"is_new"`
 	CreatedAt   time.Time `json:"created_at"`
 	UpdatedAt   time.Time `json:"updated_at"`
 }
@@ -27,6 +28,7 @@ type CreateProductRequest struct {
 	ImageURL    string   `json:"image_url"`
 	Category    string   `json:"category"`
 	Notes       []string `json:"notes"`
+	IsNew       bool     `json:"is_new"`
 }
 
 type UpdateProductRequest struct {
@@ -39,6 +41,7 @@ type UpdateProductRequest struct {
 	Category    *string  `json:"category"`
 	Notes       []string `json:"notes"`
 	Active      *bool    `json:"active"`
+	IsNew       *bool    `json:"is_new"`
 }
 
 type ProductListResponse struct {
