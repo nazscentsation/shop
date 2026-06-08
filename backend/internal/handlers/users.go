@@ -179,11 +179,6 @@ func (h *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if !user.EmailVerified {
-		utils.Error(w, http.StatusForbidden, "Please verify your email before logging in. Check your inbox or request a new verification link.")
-		return
-	}
-
 	token, err := h.generateToken(&user)
 	if err != nil {
 		utils.Error(w, http.StatusInternalServerError, "could not generate token")
@@ -377,6 +372,56 @@ func (h *UserHandler) AdminList(w http.ResponseWriter, r *http.Request) {
 		users = []models.User{}
 	}
 	utils.JSON(w, http.StatusOK, users)
+}
+
+// POST /api/admin/users — admin creates a customer or staff account directly
+func (h *UserHandler) AdminCreateUser(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		FirstName string `json:"first_name"`
+		LastName  string `json:"last_name"`
+		Email     string `json:"email"`
+		Password  string `json:"password"`
+		Role      string `json:"role"`
+	}
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		utils.Error(w, http.StatusBadRequest, "invalid request body")
+		return
+	}
+	if req.FirstName == "" || req.LastName == "" {
+		utils.Error(w, http.StatusBadRequest, "first_name and last_name are required")
+		return
+	}
+	if !emailRe.MatchString(req.Email) {
+		utils.Error(w, http.StatusBadRequest, "valid email is required")
+		return
+	}
+	if len(req.Password) < 8 {
+		utils.Error(w, http.StatusBadRequest, "password must be at least 8 characters")
+		return
+	}
+	if req.Role != "customer" && req.Role != "admin" {
+		req.Role = "customer"
+	}
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		utils.Error(w, http.StatusInternalServerError, "could not hash password")
+		return
+	}
+
+	var u models.User
+	err = h.db.QueryRowContext(r.Context(),
+		`INSERT INTO users (email, password_hash, first_name, last_name, role, email_verified)
+		 VALUES ($1, $2, $3, $4, $5, TRUE)
+		 RETURNING id, email, first_name, last_name, role, email_verified, created_at`,
+		req.Email, string(hash), req.FirstName, req.LastName, req.Role,
+	).Scan(&u.ID, &u.Email, &u.FirstName, &u.LastName, &u.Role, &u.EmailVerified, &u.CreatedAt)
+	if err != nil {
+		utils.Error(w, http.StatusConflict, "an account with that email already exists")
+		return
+	}
+
+	utils.JSON(w, http.StatusCreated, u)
 }
 
 // POST /api/auth/logout

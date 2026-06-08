@@ -43,6 +43,7 @@ type CreateOrderRequest struct {
 		ProductID int64 `json:"product_id"`
 		Quantity  int   `json:"quantity"`
 	} `json:"items"`
+	GuestEmail    string `json:"guest_email"`
 	PaymentMethod string `json:"payment_method"`
 	ShipName      string `json:"ship_name"`
 	ShipLine1     string `json:"ship_line1"`

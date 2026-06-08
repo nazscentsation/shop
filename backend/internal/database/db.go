@@ -90,7 +90,8 @@ CREATE TABLE IF NOT EXISTS products (
 
 CREATE TABLE IF NOT EXISTS orders (
     id             BIGSERIAL PRIMARY KEY,
-    user_id        BIGINT NOT NULL REFERENCES users(id),
+    user_id        BIGINT REFERENCES users(id),
+    guest_email    TEXT NOT NULL DEFAULT '',
     status         TEXT NOT NULL DEFAULT 'pending',
     total          NUMERIC(10,2) NOT NULL DEFAULT 0,
     payment_method TEXT NOT NULL DEFAULT '',
@@ -134,8 +135,10 @@ CREATE INDEX IF NOT EXISTS idx_orders_user      ON orders(user_id);
 CREATE INDEX IF NOT EXISTS idx_tickets_user     ON tickets(user_id);
 CREATE INDEX IF NOT EXISTS idx_ticket_msgs      ON ticket_messages(ticket_id);
 
-ALTER TABLE users        ADD COLUMN IF NOT EXISTS phone   TEXT NOT NULL DEFAULT '';
-ALTER TABLE users        ADD COLUMN IF NOT EXISTS address TEXT NOT NULL DEFAULT '';
-ALTER TABLE products     ADD COLUMN IF NOT EXISTS discount_pct INT NOT NULL DEFAULT 0;
-ALTER TABLE orders       ADD COLUMN IF NOT EXISTS payment_method TEXT NOT NULL DEFAULT '';
+ALTER TABLE users    ADD COLUMN IF NOT EXISTS phone   TEXT NOT NULL DEFAULT '';
+ALTER TABLE users    ADD COLUMN IF NOT EXISTS address TEXT NOT NULL DEFAULT '';
+ALTER TABLE products ADD COLUMN IF NOT EXISTS discount_pct INT NOT NULL DEFAULT 0;
+ALTER TABLE orders   ADD COLUMN IF NOT EXISTS payment_method TEXT NOT NULL DEFAULT '';
+ALTER TABLE orders   ADD COLUMN IF NOT EXISTS guest_email    TEXT NOT NULL DEFAULT '';
+ALTER TABLE orders   ALTER COLUMN user_id DROP NOT NULL;
 `

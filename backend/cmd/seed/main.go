@@ -31,7 +31,7 @@ func main() {
 		log.Fatal("password must be at least 8 characters")
 	}
 
-	_ = godotenv.Load("../../.env")
+	_ = godotenv.Load("../.env")
 
 	dbURL := os.Getenv("DATABASE_URL")
 	if dbURL == "" {

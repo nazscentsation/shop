@@ -201,7 +201,7 @@ func (h *ProductHandler) Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	_, err = h.db.ExecContext(r.Context(),
-		`UPDATE products SET active = false, updated_at = NOW() WHERE id = $1`, id)
+		`DELETE FROM products WHERE id = $1`, id)
 	if err != nil {
 		utils.Error(w, http.StatusInternalServerError, "could not delete product")
 		return

@@ -72,7 +72,7 @@ const NS = (() => {
 
   // ── Helpers ──────────────────────────────────────────────────
   function formatCurrency(amount) {
-    return new Intl.NumberFormat('en-GB', { style: 'currency', currency: 'GBP' }).format(amount);
+    return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(amount);
   }
 
   function formatDate(dateStr) {

@@ -43,14 +43,24 @@ function effectivePrice(p) {
   return p.discount_pct > 0 ? p.price * (1 - p.discount_pct / 100) : p.price;
 }
 
-// ── Auth guard ────────────────────────────────────────────────
+// ── Init — guests can browse; login required only at checkout ─
 (async () => {
-  currentUser = await NS.requireAuth();
-  if (!currentUser) return;
-
-  document.getElementById('navUser').textContent = currentUser.first_name;
-  document.getElementById('logoutBtn').addEventListener('click', NS.logout);
-
+  const res = await NS.api('GET', '/api/me');
+  if (res.ok) {
+    currentUser = res.data;
+    NS.setUser(currentUser);
+    document.getElementById('navUser').textContent = currentUser.first_name;
+    document.getElementById('signinBtn').hidden = true;
+    document.getElementById('logoutBtn').hidden = false;
+    document.getElementById('logoutBtn').addEventListener('click', NS.logout);
+    if (currentUser.role === 'admin') {
+      document.getElementById('adminBar').style.display = 'flex';
+    }
+  } else {
+    // Guest — point My Account to login page
+    const accountLink = document.getElementById('navAccountLink');
+    if (accountLink) accountLink.href = '/login.html';
+  }
   renderCart();
   await loadProducts();
 })();
@@ -230,7 +240,7 @@ function renderCart() {
   const container = document.getElementById('cartItems');
   if (!items.length) {
     container.innerHTML = '<p class="s-cart-empty">Your cart is empty.</p>';
-    document.getElementById('cartTotal').textContent = '£0.00';
+    document.getElementById('cartTotal').textContent = NS.formatCurrency(0);
     return;
   }
 
@@ -278,9 +288,12 @@ document.getElementById('checkoutBtn').addEventListener('click', () => {
 });
 
 function openCheckout() {
+  // Show guest email field only for unauthenticated users
+  document.getElementById('guestEmailField').hidden = !!currentUser;
   // Pre-fill from user profile
   if (currentUser) {
-    document.getElementById('shipName').value = `${currentUser.first_name} ${currentUser.last_name}`;
+    document.getElementById('shipFirst').value = currentUser.first_name || '';
+    document.getElementById('shipLast').value  = currentUser.last_name  || '';
   }
   // Summary
   const summaryEl = document.getElementById('checkoutSummary');
@@ -297,6 +310,45 @@ function openCheckout() {
 }
 
 document.getElementById('checkoutClose').addEventListener('click', () => { document.getElementById('checkoutModal').hidden = true; });
+
+// ── Geolocation detect ────────────────────────────────────────
+document.getElementById('detectLocationBtn').addEventListener('click', () => {
+  const btn = document.getElementById('detectLocationBtn');
+  if (!navigator.geolocation) { NS.toast('Geolocation not supported by your browser.', 'info'); return; }
+  btn.textContent = '…detecting';
+  btn.disabled = true;
+  navigator.geolocation.getCurrentPosition(async pos => {
+    try {
+      const { latitude: lat, longitude: lon } = pos.coords;
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`,
+        { headers: { 'Accept-Language': 'en' } }
+      );
+      const place = await res.json();
+      const addr  = place.address || {};
+      const road    = addr.road || addr.street || '';
+      const houseNo = addr.house_number || '';
+      document.getElementById('shipLine1').value  = [houseNo, road].filter(Boolean).join(' ');
+      document.getElementById('shipCity').value    = addr.city || addr.town || addr.village || '';
+      document.getElementById('shipPostal').value  = addr.postcode || '';
+      // Try to match country to dropdown
+      const countryName = addr.country || '';
+      const sel = document.getElementById('shipCountry');
+      const opt = [...sel.options].find(o => o.value.toLowerCase() === countryName.toLowerCase());
+      if (opt) sel.value = opt.value;
+      NS.toast('Location filled in — please verify before placing order.', 'success');
+    } catch {
+      NS.toast('Could not retrieve address. Please fill in manually.', 'error');
+    } finally {
+      btn.textContent = '⌖ Detect location';
+      btn.disabled = false;
+    }
+  }, () => {
+    NS.toast('Location access denied. Please fill in manually.', 'info');
+    btn.textContent = '⌖ Detect location';
+    btn.disabled = false;
+  });
+});
 document.getElementById('checkoutModal').addEventListener('click', e => {
   if (e.target === document.getElementById('checkoutModal')) document.getElementById('checkoutModal').hidden = true;
 });
@@ -307,30 +359,39 @@ document.getElementById('placeOrderBtn').addEventListener('click', async () => {
   fb.className = 's-feedback error';
   fb.textContent = '';
 
-  const name    = document.getElementById('shipName').value.trim();
-  const line1   = document.getElementById('shipLine1').value.trim();
-  const city    = document.getElementById('shipCity').value.trim();
-  const country = document.getElementById('shipCountry').value.trim();
-  const postal  = document.getElementById('shipPostal').value.trim();
-  const payment = document.getElementById('payMethod').value;
+  const first       = document.getElementById('shipFirst').value.trim();
+  const last        = document.getElementById('shipLast').value.trim();
+  const line1       = document.getElementById('shipLine1').value.trim();
+  const city        = document.getElementById('shipCity').value.trim();
+  const country     = document.getElementById('shipCountry').value;
+  const postal      = document.getElementById('shipPostal').value.trim();
+  const payment     = document.getElementById('payMethod').value;
+  const guestEmail  = !currentUser ? document.getElementById('guestEmail').value.trim() : '';
 
-  if (!name || !line1 || !city || !country || !postal) {
+  if (!currentUser && !guestEmail) {
+    fb.textContent = 'Please enter your email address.'; return;
+  }
+  if (!first || !last) { fb.textContent = 'Please enter your first and last name.'; return; }
+  if (!line1 || !city || !country || !postal) {
     fb.textContent = 'Please fill in all required shipping fields.'; return;
   }
   if (!payment) { fb.textContent = 'Please select a payment method.'; return; }
 
   NS.btnLoading(btn, true);
 
-  const { ok, data } = await NS.api('POST', '/api/orders', {
+  const payload = {
     items:          cart.toOrderItems(),
     payment_method: payment,
-    ship_name:    name,
+    ship_name:    first + ' ' + last,
     ship_line1:   line1,
     ship_line2:   document.getElementById('shipLine2').value.trim(),
     ship_city:    city,
     ship_country: country,
     ship_postal:  postal,
-  });
+  };
+  if (guestEmail) payload.guest_email = guestEmail;
+
+  const { ok, data } = await NS.api('POST', '/api/orders', payload);
 
   NS.btnLoading(btn, false);
 

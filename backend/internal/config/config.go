@@ -20,6 +20,9 @@ type Config struct {
 	SMTPPass    string
 	SMTPFrom    string
 	AdminEmail  string
+	TwilioSID   string
+	TwilioToken string
+	TwilioFrom  string
 }
 
 func Load() (*Config, error) {
@@ -37,6 +40,9 @@ func Load() (*Config, error) {
 		SMTPPass:    getEnv("SMTP_PASS", ""),
 		SMTPFrom:    getEnv("SMTP_FROM", ""),
 		AdminEmail:  getEnv("ADMIN_EMAIL", ""),
+		TwilioSID:   getEnv("TWILIO_SID", ""),
+		TwilioToken: getEnv("TWILIO_TOKEN", ""),
+		TwilioFrom:  getEnv("TWILIO_FROM", ""),
 	}
 
 	if cfg.DatabaseURL == "" {

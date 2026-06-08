@@ -5,6 +5,9 @@
 
 let adminUser = null;
 
+// Format product ID as NS-000001
+function nsId(id) { return 'NS-' + String(id).padStart(6, '0'); }
+
 // ── Auth guard (admin only) ───────────────────────────────────
 (async () => {
   adminUser = await NS.requireAuth('admin');
@@ -99,12 +102,13 @@ async function loadProducts() {
   tbody.innerHTML = loadingRow(8);
 
   const { ok, data } = await NS.api('GET', '/api/admin/products');
-  if (!ok) { tbody.innerHTML = errorRow(8); return; }
+  if (!ok) { tbody.innerHTML = errorRow(9); return; }
 
-  if (!data.length) { tbody.innerHTML = emptyRow(8, 'No products yet.'); return; }
+  if (!data.length) { tbody.innerHTML = emptyRow(9, 'No products yet.'); return; }
 
   tbody.innerHTML = data.map(p => `
     <tr>
+      <td style="font-size:0.7rem;color:var(--text-soft);white-space:nowrap">${nsId(p.id)}</td>
       <td>
         ${p.image_url
           ? `<img src="${NS.escapeHtml(p.image_url)}" class="s-img-preview" alt="${NS.escapeHtml(p.name)}"/>`
@@ -228,6 +232,57 @@ document.getElementById('saveProductBtn').addEventListener('click', async () => 
   }
 });
 
+// ── Product preview ───────────────────────────────────────────
+document.getElementById('previewProductBtn').addEventListener('click', () => {
+  const name     = document.getElementById('pName').value.trim() || 'Product Name';
+  const price    = parseFloat(document.getElementById('pPrice').value) || 0;
+  const discount = parseInt(document.getElementById('pDiscount').value) || 0;
+  const stock    = parseInt(document.getElementById('pStock').value) || 0;
+  const imageUrl = document.getElementById('pImage').value.trim();
+  const category = document.getElementById('pCategory').value.trim();
+  const ep       = discount > 0 ? price * (1 - discount / 100) : price;
+
+  const priceHtml = discount > 0
+    ? `<span class="s-price s-price-sale">${NS.formatCurrency(ep)}</span>
+       <span class="s-price-original">${NS.formatCurrency(price)}</span>`
+    : `<span class="s-price">${NS.formatCurrency(price)}</span>`;
+
+  document.getElementById('productPreviewCard').innerHTML = `
+    <div class="s-card" style="pointer-events:none">
+      <div class="s-card-img-wrap">
+        ${imageUrl
+          ? `<img class="s-card-img" src="${NS.escapeHtml(imageUrl)}" alt="${NS.escapeHtml(name)}"/>`
+          : `<div class="s-card-placeholder">No Image</div>`}
+        ${discount > 0 ? `<span class="s-badge-discount">${discount}% off</span>` : ''}
+      </div>
+      <div class="s-card-body">
+        ${category ? `<p class="s-card-category">${NS.escapeHtml(category)}</p>` : ''}
+        <h3 class="s-card-name">${NS.escapeHtml(name)}</h3>
+        <div class="s-card-price-row">${priceHtml}</div>
+        <p style="font-size:0.68rem;color:var(--text-soft);margin-top:0.4rem">
+          ${stock > 0 ? `${stock} in stock` : '<span style="color:var(--danger)">Out of stock</span>'}
+        </p>
+      </div>
+    </div>`;
+
+  document.getElementById('productFormModal').hidden = true;
+  document.getElementById('productPreviewModal').hidden = false;
+});
+
+document.getElementById('productPreviewClose').addEventListener('click', () => {
+  document.getElementById('productPreviewModal').hidden = true;
+  document.getElementById('productFormModal').hidden = false;
+});
+document.getElementById('previewBackBtn').addEventListener('click', () => {
+  document.getElementById('productPreviewModal').hidden = true;
+  document.getElementById('productFormModal').hidden = false;
+});
+document.getElementById('previewSaveBtn').addEventListener('click', () => {
+  document.getElementById('productPreviewModal').hidden = true;
+  document.getElementById('productFormModal').hidden = false;
+  document.getElementById('saveProductBtn').click();
+});
+
 async function deleteProduct(id) {
   if (!confirm('Remove this product from the shop?')) return;
   const { ok } = await NS.api('DELETE', `/api/admin/products/${id}`);
@@ -238,34 +293,57 @@ async function deleteProduct(id) {
 // ── Orders ────────────────────────────────────────────────────
 async function loadOrders() {
   const tbody = document.getElementById('adminOrdersBody');
-  tbody.innerHTML = loadingRow(7);
+  tbody.innerHTML = loadingRow(8);
 
   const { ok, data } = await NS.api('GET', '/api/admin/orders');
-  if (!ok) { tbody.innerHTML = errorRow(7); return; }
+  if (!ok) { tbody.innerHTML = errorRow(8); return; }
 
-  if (!data.length) { tbody.innerHTML = emptyRow(7, 'No orders yet.'); return; }
+  if (!data.length) { tbody.innerHTML = emptyRow(8, 'No orders yet.'); return; }
 
   tbody.innerHTML = data.map(o => `
     <tr>
       <td><strong>#${o.id}</strong></td>
-      <td>${NS.escapeHtml(o.first_name + ' ' + o.last_name)}<br/>
+      <td>${NS.escapeHtml((o.first_name + ' ' + o.last_name).trim() || 'Guest')}<br/>
           <span style="font-size:0.7rem;color:var(--text-soft)">${NS.escapeHtml(o.user_email)}</span></td>
+      <td style="font-size:0.78rem">${NS.escapeHtml(o.ship_city || '—')}${o.ship_country ? ', ' + NS.escapeHtml(o.ship_country) : ''}</td>
       <td style="text-transform:capitalize">${NS.escapeHtml((o.payment_method || '').replace(/_/g,' ') || '—')}</td>
       <td><strong>${NS.formatCurrency(o.total)}</strong></td>
       <td><span class="s-badge s-badge--${o.status}">${o.status}</span></td>
       <td>${NS.formatDate(o.created_at)}</td>
       <td>
-        <button class="s-btn s-btn--ghost s-btn--icon" data-orderid="${o.id}" data-status="${o.status}" title="Update status">&#9998;</button>
+        <button class="s-btn s-btn--ghost s-btn--icon" data-orderidx="${o.id}" title="View &amp; Update">&#9998;</button>
       </td>
     </tr>
   `).join('');
 
-  tbody.querySelectorAll('[data-orderid]').forEach(btn => {
+  // Store order data on the rows for the modal
+  const ordersMap = Object.fromEntries(data.map(o => [o.id, o]));
+
+  tbody.querySelectorAll('[data-orderidx]').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.getElementById('orderStatusId').value = btn.dataset.orderid;
-      document.getElementById('orderStatusLabel').textContent = `Order #${btn.dataset.orderid}`;
-      document.getElementById('orderStatusSelect').value = btn.dataset.status;
+      const o = ordersMap[parseInt(btn.dataset.orderidx)];
+      if (!o) return;
+      document.getElementById('orderStatusId').value = o.id;
+      document.getElementById('orderStatusLabel').textContent = `Order #${o.id}`;
+      document.getElementById('orderStatusSelect').value = o.status;
       document.getElementById('orderStatusFeedback').textContent = '';
+
+      // Populate detail fields
+      const name = (o.first_name + ' ' + o.last_name).trim() || 'Guest';
+      document.getElementById('odCustomer').textContent = name;
+      document.getElementById('odEmail').textContent = o.user_email || '';
+      document.getElementById('odPayment').textContent = (o.payment_method || '').replace(/_/g, ' ') || '—';
+      document.getElementById('odTotal').textContent = NS.formatCurrency(o.total);
+
+      const addrParts = [
+        o.ship_name,
+        o.ship_line1,
+        o.ship_line2,
+        [o.ship_city, o.ship_postal].filter(Boolean).join(' '),
+        o.ship_country,
+      ].filter(Boolean);
+      document.getElementById('odAddress').innerHTML = addrParts.map(p => NS.escapeHtml(p)).join('<br/>');
+
       document.getElementById('orderStatusModal').hidden = false;
     });
   });
@@ -326,11 +404,11 @@ async function loadTickets() {
   `).join('');
 
   tbody.querySelectorAll('[data-tid]').forEach(btn => {
-    btn.addEventListener('click', () => openAdminTicketThread(parseInt(btn.dataset.tid), btn.dataset.status));
+    btn.addEventListener('click', () => openAdminTicketThread(parseInt(btn.dataset.tid)));
   });
 }
 
-async function openAdminTicketThread(id, currentStatus) {
+async function openAdminTicketThread(id) {
   const modal = document.getElementById('ticketReplyModal');
   const msgs  = document.getElementById('adminThreadMessages');
   msgs.innerHTML = '<p style="text-align:center;color:var(--text-soft);font-style:italic">Loading…</p>';
@@ -457,6 +535,55 @@ async function loadUsers() {
     </tr>
   `).join('');
 }
+
+// ── Create user modal ─────────────────────────────────────────
+document.getElementById('newUserBtn').addEventListener('click', () => {
+  document.getElementById('createUserFeedback').hidden = true;
+  document.getElementById('cuFirst').value = '';
+  document.getElementById('cuLast').value  = '';
+  document.getElementById('cuEmail').value = '';
+  document.getElementById('cuPass').value  = '';
+  document.getElementById('cuRole').value  = 'customer';
+  document.getElementById('createUserModal').hidden = false;
+});
+
+function closeCreateUserModal() { document.getElementById('createUserModal').hidden = true; }
+document.getElementById('createUserClose').addEventListener('click', closeCreateUserModal);
+document.getElementById('createUserCancel').addEventListener('click', closeCreateUserModal);
+document.getElementById('createUserModal').addEventListener('click', e => {
+  if (e.target === document.getElementById('createUserModal')) closeCreateUserModal();
+});
+
+document.getElementById('createUserSave').addEventListener('click', async () => {
+  const fb   = document.getElementById('createUserFeedback');
+  const btn  = document.getElementById('createUserSave');
+  const first = document.getElementById('cuFirst').value.trim();
+  const last  = document.getElementById('cuLast').value.trim();
+  const email = document.getElementById('cuEmail').value.trim();
+  const pass  = document.getElementById('cuPass').value;
+  const role  = document.getElementById('cuRole').value;
+
+  fb.hidden = true;
+  if (!first || !last || !email || !pass) {
+    fb.textContent = 'All fields are required.'; fb.hidden = false; return;
+  }
+  if (pass.length < 8) {
+    fb.textContent = 'Password must be at least 8 characters.'; fb.hidden = false; return;
+  }
+
+  NS.btnLoading(btn, true);
+  const { ok, data } = await NS.api('POST', '/api/admin/users', { first_name: first, last_name: last, email, password: pass, role });
+  NS.btnLoading(btn, false);
+
+  if (ok) {
+    closeCreateUserModal();
+    NS.toast(`Account created for ${first} ${last}`, 'success');
+    loadUsers();
+  } else {
+    fb.textContent = data.error || 'Could not create account.';
+    fb.hidden = false;
+  }
+});
 
 // ── Table helpers ─────────────────────────────────────────────
 function loadingRow(cols) {

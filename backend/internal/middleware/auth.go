@@ -21,6 +21,29 @@ type Claims struct {
 	jwt.RegisteredClaims
 }
 
+// OptionalAuth parses the JWT if present and sets context values, but never rejects the request.
+func OptionalAuth(secret string) func(http.Handler) http.Handler {
+	return func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			if tokenStr := tokenFromRequest(r); tokenStr != "" {
+				claims := &Claims{}
+				token, err := jwt.ParseWithClaims(tokenStr, claims, func(t *jwt.Token) (any, error) {
+					if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
+						return nil, jwt.ErrSignatureInvalid
+					}
+					return []byte(secret), nil
+				})
+				if err == nil && token.Valid {
+					ctx := context.WithValue(r.Context(), ContextKeyUserID, claims.UserID)
+					ctx = context.WithValue(ctx, ContextKeyRole, claims.Role)
+					r = r.WithContext(ctx)
+				}
+			}
+			next.ServeHTTP(w, r)
+		})
+	}
+}
+
 // Auth validates JWT from either httpOnly cookie or Authorization header.
 func Auth(secret string) func(http.Handler) http.Handler {
 	return func(next http.Handler) http.Handler {

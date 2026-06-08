@@ -39,22 +39,34 @@ func ProtectedFiles(secret string, comingSoon bool, fileHandler http.Handler) ht
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		path := r.URL.Path
 
+		// When site is open, serve the shop at / directly (no redirect = no flash)
+		if !comingSoon && (path == "/" || path == "/index.html") {
+			r2 := r.Clone(r.Context())
+			r2.URL.Path = "/shop.html"
+			fileHandler.ServeHTTP(w, r2)
+			return
+		}
+
 		if adminPages[path] {
 			claims := AuthClaims(secret, r)
 			if claims == nil || claims.Role != "admin" {
-				http.Redirect(w, r, "/", http.StatusSeeOther)
+				http.Redirect(w, r, "/login.html", http.StatusSeeOther)
 				return
 			}
 		} else if userPages[path] {
 			claims := AuthClaims(secret, r)
-			if claims == nil {
-				http.Redirect(w, r, "/", http.StatusSeeOther)
-				return
-			}
-			// If site is in coming-soon mode, only admins reach the shop
-			if comingSoon && claims.Role != "admin" {
-				http.Redirect(w, r, "/", http.StatusSeeOther)
-				return
+			if comingSoon {
+				// Coming-soon mode: only admins may enter
+				if claims == nil || claims.Role != "admin" {
+					http.Redirect(w, r, "/", http.StatusSeeOther)
+					return
+				}
+			} else {
+				// Site is open: /account.html requires login; /shop.html is public
+				if path == "/account.html" && claims == nil {
+					http.Redirect(w, r, "/login.html", http.StatusSeeOther)
+					return
+				}
 			}
 		}
 

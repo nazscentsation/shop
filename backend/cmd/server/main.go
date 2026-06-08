@@ -14,11 +14,13 @@ import (
 	"github.com/nazscentsation/shop/internal/database"
 	"github.com/nazscentsation/shop/internal/email"
 	"github.com/nazscentsation/shop/internal/handlers"
+	"github.com/nazscentsation/shop/internal/jobs"
 	"github.com/nazscentsation/shop/internal/middleware"
+	"github.com/nazscentsation/shop/internal/sms"
 )
 
 func main() {
-	_ = godotenv.Load("../../.env")
+	_ = godotenv.Load("../.env")
 
 	cfg, err := config.Load()
 	if err != nil {
@@ -39,12 +41,16 @@ func main() {
 	}
 
 	mailer := email.New(cfg.SMTPHost, cfg.SMTPPort, cfg.SMTPUser, cfg.SMTPPass, cfg.SMTPFrom)
+	smsSvc := sms.New(cfg.TwilioSID, cfg.TwilioToken, cfg.TwilioFrom)
+
+	// Background jobs
+	jobs.StartCleanup(db, mailer, cfg.SiteURL)
 
 	// Handlers
 	notifyH  := handlers.NewNotifyHandler(db)
 	userH    := handlers.NewUserHandler(db, cfg.JWTSecret, mailer, cfg.SiteURL, cfg.Environment)
 	productH := handlers.NewProductHandler(db)
-	orderH   := handlers.NewOrderHandler(db)
+	orderH   := handlers.NewOrderHandler(db, mailer, smsSvc)
 	ticketH  := handlers.NewTicketHandler(db, mailer, cfg.AdminEmail)
 
 	// Middleware
@@ -84,7 +90,8 @@ func main() {
 	mux.Handle("PATCH /api/me",         authMW(http.HandlerFunc(userH.UpdateProfile)))
 	mux.Handle("PATCH /api/me/password",authMW(http.HandlerFunc(userH.ChangePassword)))
 
-	mux.Handle("POST /api/orders",      authMW(http.HandlerFunc(orderH.Create)))
+	optionalAuth := middleware.OptionalAuth(cfg.JWTSecret)
+	mux.Handle("POST /api/orders",      optionalAuth(http.HandlerFunc(orderH.Create)))
 	mux.Handle("GET /api/orders",       authMW(http.HandlerFunc(orderH.List)))
 	mux.Handle("GET /api/orders/{id}",  authMW(http.HandlerFunc(orderH.Get)))
 
@@ -96,6 +103,7 @@ func main() {
 	// ---- Admin ----
 	mux.Handle("GET /api/admin/notify",                  admin(http.HandlerFunc(notifyH.List)))
 	mux.Handle("GET /api/admin/users",                   admin(http.HandlerFunc(userH.AdminList)))
+	mux.Handle("POST /api/admin/users",                  admin(http.HandlerFunc(userH.AdminCreateUser)))
 	mux.Handle("GET /api/admin/products",                admin(http.HandlerFunc(productH.AdminList)))
 	mux.Handle("POST /api/admin/products",               admin(http.HandlerFunc(productH.Create)))
 	mux.Handle("PATCH /api/admin/products/{id}",         admin(http.HandlerFunc(productH.Update)))
@@ -108,7 +116,7 @@ func main() {
 	mux.Handle("PATCH /api/admin/tickets/{id}/status",   admin(http.HandlerFunc(ticketH.AdminSetStatus)))
 
 	// ---- Static frontend (gated) ----
-	fileServer := http.FileServer(http.Dir("../../frontend"))
+	fileServer := http.FileServer(http.Dir("../frontend"))
 	mux.Handle("/", middleware.ProtectedFiles(cfg.JWTSecret, cfg.ComingSoon, fileServer))
 
 	handler := middleware.Security(

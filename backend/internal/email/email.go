@@ -75,6 +75,35 @@ func (m *Mailer) SendTicketCreated(adminEmail, userEmail, subject string, ticket
 	return m.Send(adminEmail, fmt.Sprintf("New Support Ticket #%d: %s", ticketID, subject), body)
 }
 
+func (m *Mailer) SendOrderStatusUpdate(to, firstName string, orderID int64, status string, total float64) error {
+	statusLabel := map[string]string{
+		"pending":   "Pending",
+		"paid":      "Payment Confirmed",
+		"shipped":   "Shipped",
+		"delivered": "Delivered",
+		"cancelled": "Cancelled",
+	}[status]
+	if statusLabel == "" {
+		statusLabel = status
+	}
+	greeting := "Hello"
+	if firstName != "" {
+		greeting = "Hi " + firstName
+	}
+	body := fmt.Sprintf(`
+<p>%s,</p>
+<p>Your <strong>Nazscentsation</strong> order <strong>#%d</strong> has been updated.</p>
+<table style="border-collapse:collapse;margin:16px 0">
+  <tr><td style="padding:6px 12px 6px 0;color:#888;font-size:13px">Order</td><td style="padding:6px 0;font-weight:600">#%d</td></tr>
+  <tr><td style="padding:6px 12px 6px 0;color:#888;font-size:13px">Status</td><td style="padding:6px 0;font-weight:600;color:#C9A84C">%s</td></tr>
+  <tr><td style="padding:6px 12px 6px 0;color:#888;font-size:13px">Total</td><td style="padding:6px 0">₦%.2f</td></tr>
+</table>
+<p>Thank you for shopping with us.</p>
+<br><p style="color:#888;font-size:12px">Nazscentsation · Luxury Fragrance Artistry</p>
+`, greeting, orderID, orderID, statusLabel, total)
+	return m.Send(to, fmt.Sprintf("Order #%d Update: %s", orderID, statusLabel), body)
+}
+
 func (m *Mailer) SendTicketReply(userEmail, subject string, ticketID int64, replyBody string) error {
 	body := fmt.Sprintf(`
 <p>Your support ticket has received a reply.</p>

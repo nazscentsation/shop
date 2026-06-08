@@ -566,6 +566,22 @@ button { font-family: inherit; cursor: pointer; }
   transition: color var(--transition);
 }
 .s-modal-close:hover { color: var(--text); }
+.s-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.8rem;
+  padding-right: 2rem;
+}
+.s-modal-header .s-modal-title { margin-bottom: 0; }
+.s-modal-actions {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: flex-end;
+  margin-top: 1.6rem;
+  padding-top: 1.2rem;
+  border-top: 1px solid var(--border);
+}
 
 /* ── Forms ───────────────────────────────────── */
 .s-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }

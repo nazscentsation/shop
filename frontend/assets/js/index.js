@@ -9,17 +9,20 @@
     NS.api('GET', '/api/me'),
     NS.api('GET', '/api/config'),
   ]);
-  if (!meRes.ok) return; // not logged in, stay on coming-soon
-  const user       = meRes.data;
   const comingSoon = cfgRes.ok ? cfgRes.data.coming_soon : true;
 
-  if (user.role === 'admin') {
-    window.location.href = '/portal.html';
-  } else if (!comingSoon) {
-    // Shop is open — send customer to the shop
+  if (meRes.ok) {
+    const user = meRes.data;
+    // Logged-in users go to their destination
+    window.location.href = user.role === 'admin' ? '/portal.html' : '/shop.html';
+    return;
+  }
+
+  // Not logged in — if site is open, send straight to shop
+  if (!comingSoon) {
     window.location.href = '/shop.html';
   }
-  // else: coming-soon mode, customer is logged in but shop not open yet — stay here
+  // else: COMING_SOON=true, stay on coming-soon page
 })();
 
 // ── Notify form ───────────────────────────────────────────────

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Sign In — Nazscentsation</title>
+  <link rel="icon" type="image/svg+xml" href="assets/images/logo-dark.svg"/>
+  <link rel="stylesheet" href="assets/css/shop.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@200;300;400&display=swap" rel="stylesheet"/>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      background: var(--bg);
+    }
+
+    .l-logo { margin-bottom: 2.2rem; text-align: center; }
+    .l-logo img { width: 240px; max-width: 80vw; height: auto; }
+
+    .l-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 2.4rem 2.2rem 2rem;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .l-panel[hidden] { display: none; }
+
+    .l-title {
+      font-family: var(--font-serif);
+      font-size: 1.5rem;
+      font-weight: 300;
+      font-style: italic;
+      color: var(--text);
+      margin-bottom: 1.6rem;
+      letter-spacing: 0.03em;
+    }
+
+    .l-field {
+      margin-bottom: 1.1rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      min-width: 0;
+    }
+    .l-field label {
+      font-size: 0.7rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: var(--text-soft);
+      font-weight: 400;
+    }
+    .l-hint {
+      font-size: 0.65rem;
+      color: var(--gold-dim);
+      font-style: italic;
+    }
+    .l-field input {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border-dark);
+      border-radius: var(--radius);
+      color: var(--text);
+      font-family: var(--font-sans);
+      font-size: 0.88rem;
+      font-weight: 300;
+      padding: 0.75rem 1rem;
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .l-field input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.1);
+    }
+
+    .l-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.8rem;
+    }
+    .l-row > .l-field { min-width: 0; margin-bottom: 1.1rem; }
+
+    .l-feedback {
+      font-size: 0.76rem;
+      min-height: 1.1em;
+      margin-bottom: 0.9rem;
+      line-height: 1.5;
+    }
+    .l-feedback.success { color: var(--success); }
+    .l-feedback.error   { color: var(--danger); }
+
+    .l-btn {
+      width: 100%;
+      background: var(--gold);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 0.72rem;
+      font-weight: 400;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      padding: 0.88rem;
+      border-radius: var(--radius);
+      transition: background var(--transition);
+    }
+    .l-btn:hover    { background: var(--gold-light); color: var(--text); }
+    .l-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    .l-links {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.1rem;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .l-links a {
+      font-size: 0.72rem;
+      letter-spacing: 0.08em;
+      color: var(--gold-dim);
+      text-decoration: none;
+      transition: color var(--transition);
+    }
+    .l-links a:hover { color: var(--gold); }
+
+    .l-divider {
+      height: 1px;
+      background: var(--border);
+      margin: 1.6rem 0;
+    }
+
+    .l-back {
+      margin-top: 1.8rem;
+      font-size: 0.7rem;
+      letter-spacing: 0.12em;
+      color: var(--text-soft);
+      text-align: center;
+    }
+    .l-back a { color: var(--gold-dim); text-decoration: underline; transition: color var(--transition); }
+    .l-back a:hover { color: var(--gold); }
+
+    @media (max-width: 480px) {
+      .l-card  { padding: 1.8rem 1.2rem 1.5rem; }
+      .l-row   { grid-template-columns: 1fr; }
+      .l-links { flex-direction: column; align-items: flex-start; gap: 0.7rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="l-logo">
+    <a href="/"><img src="assets/images/logo-dark.svg" alt="Nazscentsation"/></a>
+  </div>
+
+  <div class="l-card">
+
+    <!-- Login -->
+    <div class="l-panel" id="panelLogin">
+      <h1 class="l-title">Welcome Back</h1>
+      <div class="l-feedback" id="loginFeedback"></div>
+      <form id="loginForm" novalidate>
+        <div class="l-field">
+          <label for="loginEmail">Email</label>
+          <input type="email" id="loginEmail" autocomplete="email" required/>
+        </div>
+        <div class="l-field">
+          <label for="loginPass">Password</label>
+          <input type="password" id="loginPass" autocomplete="current-password" required/>
+        </div>
+        <button class="l-btn" type="submit" id="loginBtn">Sign In</button>
+      </form>
+      <div class="l-links">
+        <a href="#" id="toRegister">Create an account</a>
+        <a href="#" id="toForgot">Forgot password?</a>
+      </div>
+    </div>
+
+    <!-- Register -->
+    <div class="l-panel" id="panelRegister" hidden>
+      <h1 class="l-title">Create Account</h1>
+      <div class="l-feedback" id="registerFeedback"></div>
+      <form id="registerForm" novalidate>
+        <div class="l-row">
+          <div class="l-field">
+            <label for="regFirst">First Name</label>
+            <input type="text" id="regFirst" autocomplete="given-name" required/>
+          </div>
+          <div class="l-field">
+            <label for="regLast">Last Name</label>
+            <input type="text" id="regLast" autocomplete="family-name" required/>
+          </div>
+        </div>
+        <div class="l-field">
+          <label for="regEmail">Email</label>
+          <input type="email" id="regEmail" autocomplete="email" required/>
+        </div>
+        <div class="l-field">
+          <label for="regPass">Password <span class="l-hint">(min. 8 characters)</span></label>
+          <input type="password" id="regPass" autocomplete="new-password" required/>
+        </div>
+        <button class="l-btn" type="submit" id="registerBtn">Create Account</button>
+      </form>
+      <div class="l-links">
+        <a href="#" id="toLogin">Already have an account? Sign in</a>
+      </div>
+    </div>
+
+    <!-- Forgot Password -->
+    <div class="l-panel" id="panelForgot" hidden>
+      <h1 class="l-title">Reset Password</h1>
+      <div class="l-feedback" id="forgotFeedback"></div>
+      <form id="forgotForm" novalidate>
+        <div class="l-field">
+          <label for="forgotEmail">Email Address</label>
+          <input type="email" id="forgotEmail" autocomplete="email" required/>
+        </div>
+        <button class="l-btn" type="submit" id="forgotBtn">Send Reset Link</button>
+      </form>
+      <div class="l-links">
+        <a href="#" id="forgotToLogin">← Back to sign in</a>
+      </div>
+    </div>
+
+  </div>
+
+  <p class="l-back"><a href="/">← Continue browsing</a></p>
+
+  <script src="assets/js/app.js"></script>
+  <script>
+    'use strict';
+
+    // Redirect if already logged in
+    (async () => {
+      const res = await NS.api('GET', '/api/me');
+      if (!res.ok) return;
+      const next = new URLSearchParams(location.search).get('next');
+      window.location.href = res.data.role === 'admin' ? '/portal.html'
+        : next === 'shop' ? '/' : '/account.html';
+    })();
+
+    const panels = {
+      login:    document.getElementById('panelLogin'),
+      register: document.getElementById('panelRegister'),
+      forgot:   document.getElementById('panelForgot'),
+    };
+    function show(name) {
+      Object.values(panels).forEach(p => p.hidden = true);
+      panels[name].hidden = false;
+      clearFeedback();
+    }
+    function clearFeedback() {
+      ['loginFeedback','registerFeedback','forgotFeedback'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) { el.textContent = ''; el.className = 'l-feedback'; }
+      });
+    }
+    function setFeedback(id, msg, ok) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = msg;
+      el.className = 'l-feedback ' + (ok ? 'success' : 'error');
+    }
+
+    document.getElementById('toRegister').addEventListener('click',  e => { e.preventDefault(); show('register'); });
+    document.getElementById('toLogin').addEventListener('click',     e => { e.preventDefault(); show('login'); });
+    document.getElementById('toForgot').addEventListener('click',    e => { e.preventDefault(); show('forgot'); });
+    document.getElementById('forgotToLogin').addEventListener('click', e => { e.preventDefault(); show('login'); });
+
+    const urlPanel = new URLSearchParams(location.search).get('panel');
+    if (urlPanel && panels[urlPanel]) show(urlPanel);
+
+    // Login
+    let failCount = 0;
+    document.getElementById('loginForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const pass  = document.getElementById('loginPass').value;
+      const btn   = document.getElementById('loginBtn');
+      if (!email || !pass) { setFeedback('loginFeedback', 'Please enter your email and password.', false); return; }
+
+      NS.btnLoading(btn, true);
+      const { ok, status, data } = await NS.api('POST', '/api/auth/login', { email, password: pass });
+      NS.btnLoading(btn, false);
+
+      if (ok) {
+        NS.setUser(data.user);
+        const next = new URLSearchParams(location.search).get('next');
+        setTimeout(() => {
+          window.location.href = data.user.role === 'admin' ? '/portal.html'
+            : next === 'shop' ? '/' : '/account.html';
+        }, 80);
+        return;
+      }
+      if (status === 403) {
+        setFeedback('loginFeedback', 'Your email has not been verified. Please check your inbox.', false);
+        return;
+      }
+      failCount++;
+      if (failCount >= 3) {
+        const fb = document.getElementById('loginFeedback');
+        fb.className = 'l-feedback error';
+        fb.innerHTML = 'Email or password is incorrect. <a href="#" id="hintForgot" style="color:inherit;text-decoration:underline">Forgot your password?</a>';
+        document.getElementById('hintForgot')?.addEventListener('click', ev => { ev.preventDefault(); show('forgot'); });
+      } else {
+        setFeedback('loginFeedback', 'Email or password is incorrect. Please try again.', false);
+      }
+    });
+
+    // Register
+    document.getElementById('registerForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const first = document.getElementById('regFirst').value.trim();
+      const last  = document.getElementById('regLast').value.trim();
+      const email = document.getElementById('regEmail').value.trim();
+      const pass  = document.getElementById('regPass').value;
+      const btn   = document.getElementById('registerBtn');
+      if (!first || !last) { setFeedback('registerFeedback', 'First and last name are required.', false); return; }
+      if (!NS.validEmail(email)) { setFeedback('registerFeedback', 'Please enter a valid email address.', false); return; }
+      if (pass.length < 8) { setFeedback('registerFeedback', 'Password must be at least 8 characters.', false); return; }
+
+      NS.btnLoading(btn, true);
+      const { ok, data } = await NS.api('POST', '/api/auth/register', { first_name: first, last_name: last, email, password: pass });
+      NS.btnLoading(btn, false);
+
+      if (ok) {
+        setFeedback('registerFeedback', 'Account created! Please check your email to verify before signing in.', true);
+        document.getElementById('registerForm').reset();
+      } else {
+        setFeedback('registerFeedback', data.error || 'Could not create account. Please try again.', false);
+      }
+    });
+
+    // Forgot password
+    document.getElementById('forgotForm').addEventListener('submit', async e => {
+      e.preventDefault();
+      const email = document.getElementById('forgotEmail').value.trim();
+      const btn   = document.getElementById('forgotBtn');
+      if (!NS.validEmail(email)) { setFeedback('forgotFeedback', 'Please enter a valid email address.', false); return; }
+
+      NS.btnLoading(btn, true);
+      await NS.api('POST', '/api/auth/forgot-password', { email });
+      NS.btnLoading(btn, false);
+      setFeedback('forgotFeedback', 'If that address is registered, a reset link has been sent. Please check your inbox.', true);
+      document.getElementById('forgotForm').reset();
+    });
+  </script>
+</body>
+</html>
